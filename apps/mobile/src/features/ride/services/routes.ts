@@ -19,8 +19,11 @@ export async function expectedRoutes(origin: LatLng, destination: LatLng, mode: 
   const url =
     `${OSRM[mode]}/${origin.lng},${origin.lat};${destination.lng},${destination.lat}` +
     '?alternatives=3&overview=full&geometries=geojson';
+  // The public OSRM servers are sometimes slow; never let them hold up a trip.
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), 6000);
   try {
-    const res = await fetch(url, { headers: { 'User-Agent': 'SafeSphere/1.0 (college project)' } });
+    const res = await fetch(url, { headers: { 'User-Agent': 'SafeSphere/1.0 (college project)' }, signal: abort.signal });
     if (!res.ok) return [];
     const json = (await res.json()) as {
       routes?: { geometry: { coordinates: [number, number][] }; duration: number; distance: number }[];
@@ -32,5 +35,7 @@ export async function expectedRoutes(origin: LatLng, destination: LatLng, mode: 
     }));
   } catch {
     return [];
+  } finally {
+    clearTimeout(timer);
   }
 }

@@ -14,8 +14,8 @@ import { colors } from '@/theme';
 
 import type { Bounds, LatLng, PlannedRoute, RiskCell, SafePlace } from '../services/mapApi';
 
-/** Free light basemap from OpenFreeMap (OSM data, no key). */
-export const MAP_STYLE = 'https://tiles.openfreemap.org/styles/positron';
+/** Detailed, Google-Maps-like basemap from OpenFreeMap (OSM data: roads, places, POIs; free, no key). */
+export const MAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
 export const MUMBAI: LatLng = { lat: 19.076, lng: 72.8777 };
 
 type RiskMapProps = {
@@ -60,7 +60,7 @@ export const RiskMap = forwardRef<CameraRef, RiskMapProps>(function RiskMap(
         .map((p) => ({
           type: 'Feature',
           geometry: { type: 'Point', coordinates: [p.lng, p.lat] },
-          properties: { kind: p.kind },
+          properties: { police: p.kind === 'police' },
         })),
     }),
     [places],
@@ -167,8 +167,8 @@ export const RiskMap = forwardRef<CameraRef, RiskMapProps>(function RiskMap(
           id="places-dot"
           type="circle"
           paint={{
-            'circle-radius': 7,
-            'circle-color': colors.info,
+            'circle-radius': 6,
+            'circle-color': ['case', ['get', 'police'], colors.info, colors.safe],
             'circle-stroke-color': '#FFFFFF',
             'circle-stroke-width': 2,
           }}

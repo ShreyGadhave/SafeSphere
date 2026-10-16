@@ -84,10 +84,12 @@ export async function areaRisk(point: LatLng, slot: TimeSlot): Promise<RiskCell 
   return bestD <= 700 ? best : null;
 }
 
-export async function fetchSafePlaces(point: LatLng, limit = 25): Promise<SafePlace[]> {
+/** Nearest police stations and hospitals (the map already shows other places from OSM). */
+export async function fetchSafePlaces(point: LatLng, limit = 10): Promise<SafePlace[]> {
   const { data, error } = await supabase.rpc('nearest_safe_places', {
     p_lat: point.lat,
     p_lng: point.lng,
+    p_kinds: ['police', 'hospital'],
     p_limit: limit,
   });
   if (error) throw error;

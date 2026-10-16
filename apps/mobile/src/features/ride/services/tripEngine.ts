@@ -39,15 +39,15 @@ export type StartTripParams = {
 };
 
 export async function startTrip(p: StartTripParams): Promise<ActiveTrip> {
-  const routes = await expectedRoutes(p.origin, p.destination, p.mode === 'ride' ? 'drive' : 'walk');
-  const plannedDurationS = p.arriveInMin ? p.arriveInMin * 60 : (routes[0]?.durationS ?? null);
+  // Start monitoring immediately; the expected routes arrive in the background (below).
   const now = Date.now();
+  const plannedDurationS = p.arriveInMin ? p.arriveInMin * 60 : null;
   const trip: ActiveTrip = {
     tripId: Crypto.randomUUID(),
     mode: p.mode,
     origin: p.origin,
     destination: p.destination,
-    routes: routes.map((r) => r.polyline),
+    routes: [],
     startedAt: now,
     expectedArrivalAt: plannedDurationS ? now + plannedDurationS * 1000 : null,
     plannedDurationS,
@@ -72,7 +72,6 @@ export async function startTrip(p: StartTripParams): Promise<ActiveTrip> {
         origin: toEwkt(p.origin.lat, p.origin.lng),
         destination: toEwkt(p.destination.lat, p.destination.lng),
         destination_name: p.destination.name,
-        expected_routes: routes.map((r) => ({ duration_s: r.durationS, distance_m: r.distanceM })),
         cab_provider: p.cab?.provider ?? null,
         driver_name: p.cab?.driverName ?? null,
         vehicle_plate: p.cab?.plate ?? null,
@@ -96,7 +95,28 @@ export async function startTrip(p: StartTripParams): Promise<ActiveTrip> {
       notificationColor: '#0E1726',
     },
   });
+
+  void attachRoutes(trip.tripId, p);
   return trip;
+}
+
+/** Fetches the expected routes after the trip has started and adds them to it. */
+async function attachRoutes(tripId: string, p: StartTripParams): Promise<void> {
+  const routes = await expectedRoutes(p.origin, p.destination, p.mode === 'ride' ? 'drive' : 'walk');
+  const current = await loadTrip();
+  if (!routes.length || current?.tripId !== tripId) return;
+  const plannedDurationS = current.plannedDurationS ?? routes[0].durationS;
+  const expectedArrivalAt = current.startedAt + plannedDurationS * 1000;
+  await updateTrip({ routes: routes.map((r) => r.polyline), plannedDurationS, expectedArrivalAt });
+  await write({
+    kind: 'update',
+    table: 'trips',
+    match: { id: tripId },
+    values: {
+      expected_routes: routes.map((r) => ({ duration_s: r.durationS, distance_m: r.distanceM })),
+      expected_arrival_at: new Date(expectedArrivalAt).toISOString(),
+    },
+  });
 }
 
 export async function endTrip(status: 'completed' | 'cancelled'): Promise<void> {

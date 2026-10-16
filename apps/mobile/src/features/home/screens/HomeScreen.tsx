@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { Card, ListRow, ScalePressable, Screen, SectionHeader, Text, Toggle } from '@/components/ui';
 import { useDetection } from '@/features/detection';
+import { CabLinkCard } from '@/features/ride/components/CabLinkCard';
 import { useAreaRisk, useCurrentPosition, riskLevel, slotFor } from '@/features/map';
 import { useProfile, useSafetySettings } from '@/features/profile';
 import { colors, fadeInUp, shadows, spacing } from '@/theme';
@@ -68,6 +69,8 @@ export function HomeScreen() {
           </Text>
         </Card>
       )}
+
+      <CabLinkCard index={1} />
 
       <SectionHeader title="Going somewhere?" />
       <View style={styles.grid}>

@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Chip, ScalePressable, Text } from '@/components/ui';
 import { fetchNearbyReports } from '@/features/community/services/communityApi';
+import { syncCabFromClipboard } from '@/features/ride/components/CabLinkCard';
 import { colors, layout, radius, shadows, spacing } from '@/theme';
 
 import { AreaCard } from '../components/AreaCard';
@@ -90,6 +91,7 @@ export function MapScreen() {
           <Chip label="Risk" selected={showRisk} onPress={() => setShowRisk((v) => !v)} />
           <Chip label="Incidents" selected={showIncidents} onPress={() => setShowIncidents((v) => !v)} />
           <Chip label="Safe places" selected={showPlaces} onPress={() => setShowPlaces((v) => !v)} />
+          <Chip label="Paste cab link" onPress={() => void syncCabFromClipboard()} />
           <ScalePressable
             style={styles.timeChip}
             accessibilityLabel={`Heatmap time: ${TIME_PRESETS[preset].label}. Tap to change`}
