@@ -37,6 +37,9 @@ class Settings(BaseSettings):
     allowed_origins: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["http://localhost:5173"])
     # app/core/config.py -> repo root is 4 levels up (core, app, ml-api, services).
     model_dir: Path = Path(__file__).resolve().parents[4] / "ml" / "models"
+    # Load risk tables, street graphs and NLP models in the background at startup, so the first
+    # route request doesn't pay the ~8 s cold load.
+    warm_models: bool = True
 
     @field_validator("groq_models", "allowed_origins", mode="before")
     @classmethod

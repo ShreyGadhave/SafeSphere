@@ -89,14 +89,33 @@ class RoutingService:
         self.risk = risk
         self._graphs: dict[tuple[str, str], Graph] = {}
 
+    def _files(self, mode: str) -> list[Path]:
+        return sorted(self.routing_dir.glob(f"*_{mode}.npz")) or sorted(self.routing_dir.glob("*_drive.npz"))
+
+    def load_all(self) -> None:
+        """Preload every city graph (startup warm-up)."""
+        for mode in ("drive", "walk"):
+            for f in self._files(mode):
+                self._load(f, mode)
+
+    def _load(self, f: Path, mode: str) -> Graph:
+        key = (f.stem, mode)
+        if key not in self._graphs:
+            self._graphs[key] = Graph.load(f)
+        return self._graphs[key]
+
     def _graph_for(self, p: LatLng, mode: str) -> Graph:
-        files = sorted(self.routing_dir.glob(f"*_{mode}.npz")) or sorted(self.routing_dir.glob("*_drive.npz"))
-        for f in files:
-            key = (f.stem, mode)
-            if key not in self._graphs:
-                self._graphs[key] = Graph.load(f)
-            if self._graphs[key].contains(p):
-                return self._graphs[key]
+        for f in self._files(mode):
+            # Check the bounding box from the node arrays first, so a Mumbai request never
+            # pays for building the (largest) Delhi graph.
+            if (f.stem, mode) not in self._graphs:
+                with np.load(f, allow_pickle=False) as d:
+                    lat, lng = d["lat"], d["lng"]
+                    if not (lat.min() <= p.lat <= lat.max() and lng.min() <= p.lng <= lng.max()):
+                        continue
+            g = self._load(f, mode)
+            if g.contains(p):
+                return g
         raise LookupError("Routing is available in Mumbai, Navi Mumbai, Delhi and Pune.")
 
     def plan(self, request: RouteRequest) -> RouteResponse:
