@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -16,7 +17,13 @@ const ARRIVE_IN = [null, 10, 20, 30, 45] as const;
 export function WalkScreen() {
   const trip = useActiveTrip();
   const { position } = useCurrentPosition();
-  const [destination, setDestination] = useState<Destination | null>(null);
+  // Arriving from the map / route planner: the destination is already chosen.
+  const params = useLocalSearchParams<{ lat?: string; lng?: string; name?: string }>();
+  const [destination, setDestination] = useState<Destination | null>(() =>
+    params.lat && params.lng
+      ? { lat: Number(params.lat), lng: Number(params.lng), name: params.name || 'Selected point' }
+      : null,
+  );
   const [arriveIn, setArriveIn] = useState<number | null>(null);
 
   const start = useMutation({

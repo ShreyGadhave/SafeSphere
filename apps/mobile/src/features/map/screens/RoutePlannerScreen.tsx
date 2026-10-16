@@ -169,7 +169,16 @@ export function RoutePlannerScreen() {
           ) : null}
 
           {routes.length ? (
-            <Button label="Start Safe Walk on this route" onPress={() => router.push('/walk')} />
+            <Button
+              label="Start Safe Walk on this route"
+              onPress={() =>
+                // Hand the destination over so Safe Walk doesn't ask for it again.
+                router.push({
+                  pathname: '/walk',
+                  params: { lat: String(destination!.lat), lng: String(destination!.lng), name: destination!.name },
+                })
+              }
+            />
           ) : (
             <Button
               label={plan.isPending ? 'Finding routes…' : 'Show safe routes'}
