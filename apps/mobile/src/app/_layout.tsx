@@ -21,6 +21,7 @@ import '@/features/sos/tasks';
 import { AuthProvider, useUser } from '@/features/auth';
 import { usePushRegistration } from '@/features/notifications/push';
 import { useAppGate } from '@/features/onboarding';
+import { DetectionProvider } from '@/features/detection';
 import { SosProvider } from '@/features/sos';
 import { queryClient } from '@/lib/queryClient';
 import { colors } from '@/theme';
@@ -35,7 +36,9 @@ export default function RootLayout() {
           <BottomSheetModalProvider>
             <StatusBar style="dark" />
             <SosProvider>
-              <RootNavigator />
+              <DetectionProvider>
+                <RootNavigator />
+              </DetectionProvider>
             </SosProvider>
           </BottomSheetModalProvider>
         </GestureHandlerRootView>

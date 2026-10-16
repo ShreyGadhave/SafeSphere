@@ -57,6 +57,7 @@ export class KOfN {
 let model: TfliteModel | null = null;
 
 async function getModel(): Promise<TfliteModel> {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- Metro bundles assets via require()
   model ??= await loadTensorflowModel(require('../../../assets/models/yamnet.tflite'), []);
   return model;
 }

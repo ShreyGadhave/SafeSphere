@@ -1,0 +1,55 @@
+{
+  "dataset": "UCI Simulated Falls and Daily Living Activities (17 volunteers; waist + thigh sensors)",
+  "evaluation": "5-fold GroupKFold by volunteer, mean (std)",
+  "windows": {
+    "total": 29012,
+    "falls": 3677,
+    "daily": 25335
+  },
+  "cross_validation": {
+    "random_forest": {
+      "sensitivity": [
+        0.9944,
+        0.0053
+      ],
+      "specificity": [
+        0.9996,
+        0.0003
+      ],
+      "f1": [
+        0.9958,
+        0.0033
+      ],
+      "roc_auc": [
+        0.9996,
+        0.0007
+      ]
+    },
+    "cnn": {
+      "sensitivity": [
+        0.9969,
+        0.0034
+      ],
+      "specificity": [
+        0.9978,
+        0.0021
+      ],
+      "f1": [
+        0.9909,
+        0.006
+      ],
+      "roc_auc": [
+        0.9992,
+        0.0009
+      ]
+    }
+  },
+  "phone_threshold": {
+    "threshold": 0.95,
+    "sensitivity": 0.991,
+    "specificity": 0.9989,
+    "f1": 0.9918,
+    "roc_auc": 0.9992
+  },
+  "tflite_bytes": 109040
+}

@@ -1,0 +1,11 @@
+{
+  "model": "fall_cnn.tflite",
+  "sample_rate_hz": 25,
+  "window_samples": 100,
+  "channels": [
+    "acc_magnitude_g",
+    "gyro_magnitude_rad_s"
+  ],
+  "threshold": 0.95,
+  "impact_gate_g": 1.8
+}

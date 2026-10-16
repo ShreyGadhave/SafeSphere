@@ -1,9 +1,10 @@
 import { router } from 'expo-router';
-import { Activity, Bell, Car, Footprints, Mic, Phone, Route, Smartphone } from 'lucide-react-native';
+import { Activity, Bell, Car, Footprints, Mic, Phone, Route, ShieldCheck, Smartphone } from 'lucide-react-native';
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Card, ListRow, ScalePressable, Screen, SectionHeader, Text, Toggle } from '@/components/ui';
+import { useDetection } from '@/features/detection';
 import { useAreaRisk, useCurrentPosition, riskLevel, slotFor } from '@/features/map';
 import { useProfile, useSafetySettings } from '@/features/profile';
 import { colors, fadeInUp, shadows, spacing } from '@/theme';
@@ -22,6 +23,11 @@ export function HomeScreen() {
   const now = new Date();
   const profile = useProfile();
   const { settings, update } = useSafetySettings();
+  const detection = useDetection();
+  const listeningLabel =
+    [detection.listening.audio && 'listening for screams', detection.listening.motion && 'watching for falls']
+      .filter(Boolean)
+      .join(' · ') || 'Turn on to arm scream and fall detection now';
   const { position, denied } = useCurrentPosition();
   const slot = useMemo(() => slotFor(), []);
   const area = useAreaRisk(position, slot);
@@ -73,6 +79,14 @@ export function HomeScreen() {
 
       <SectionHeader title="Always-on protection" />
       <Card flush entering={fadeInUp(5)}>
+        <ListRow
+          icon={ShieldCheck}
+          title="Guard mode"
+          subtitle={detection.guardMode ? listeningLabel : 'Turn on to arm scream and fall detection now'}
+          accessory={
+            <Toggle value={detection.guardMode} onValueChange={detection.setGuardMode} accessibilityLabel="Guard mode" />
+          }
+        />
         <ListRow
           icon={Activity}
           title="Fall & snatch detection"
