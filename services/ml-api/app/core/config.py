@@ -34,9 +34,7 @@ class Settings(BaseSettings):
     groq_requests_per_minute: int = 25
     groq_timeout_s: float = 20.0
 
-    allowed_origins: Annotated[list[str], NoDecode] = Field(
-        default_factory=lambda: ["http://localhost:5173"]
-    )
+    allowed_origins: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["http://localhost:5173"])
     # app/core/config.py -> repo root is 4 levels up (core, app, ml-api, services).
     model_dir: Path = Path(__file__).resolve().parents[4] / "ml" / "models"
 

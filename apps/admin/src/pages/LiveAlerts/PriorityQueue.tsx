@@ -8,7 +8,7 @@ import { cn } from '@/lib/cn'
 import { emergencyTypeLabel, statusLabel, timeAgo, triggerLabel } from '@/lib/format'
 import { formatCoords } from '@/lib/geo'
 import { fadeUp, stagger } from '@/lib/motion'
-import type { LiveAlertsData } from '@/lib/queries'
+import { type LiveAlertsData, useAlertSummary } from '@/lib/queries'
 import { useNow } from '@/lib/useNow'
 import type { LiveAlert } from '@/types'
 
@@ -23,6 +23,8 @@ function AlertCard({ alert, now }: { alert: LiveAlert; now: number }) {
   const styles = toneStyles[tone]
   const Icon = triggerIcon[alert.trigger_source]
   const chips = modelScoreChips(alert.model_scores)
+  const summary = useAlertSummary(alert)
+  const summaryText = alert.ai_summary ?? summary.data
   const place = alert.address ?? (alert.position ? formatCoords(alert.position) : 'Waiting for location')
   const title =
     alert.emergency_type === 'unknown'
@@ -56,6 +58,7 @@ function AlertCard({ alert, now }: { alert: LiveAlert; now: number }) {
           <span className="truncate text-[13px] text-ink-2">
             {alert.person?.full_name || 'Unknown user'} · {place}
           </span>
+          {summaryText && <span className="text-[13px] leading-snug text-ink">{summaryText}</span>}
           {(alert.is_duress || alert.status !== 'active' || chips.length > 0) && (
             <div className="flex flex-wrap gap-1.5">
               {alert.is_duress && <Badge tone="solid-danger">Duress PIN used</Badge>}

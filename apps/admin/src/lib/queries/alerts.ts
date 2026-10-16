@@ -48,6 +48,8 @@ export function useLiveAlerts(region: Region) {
           .select(ALERT_SELECT)
           .eq('status', 'active')
           .or(regionFilter(region))
+          // ML-8 triage: highest priority first, then newest.
+          .order('priority_score', { ascending: false, nullsFirst: false })
           .order('created_at', { ascending: false })
           .limit(100),
         supabase

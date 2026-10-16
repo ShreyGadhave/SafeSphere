@@ -21,6 +21,7 @@ import { useNow } from '@/lib/useNow'
 import { ContactsPanel, MedicalCardPanel } from './AlertPeople'
 import { AlertTimeline } from './AlertTimeline'
 import { EvidencePanel } from './EvidencePanel'
+import { PriorityPanel } from './PriorityPanel'
 
 const AlertTrailMap = lazy(() => import('./AlertTrailMap').then((m) => ({ default: m.AlertTrailMap })))
 
@@ -170,6 +171,8 @@ export function AlertDetailPage() {
         </motion.section>
         <AlertTimeline alertId={a.id} />
       </motion.div>
+
+      <PriorityPanel alert={a} />
 
       <div className="flex flex-wrap items-stretch gap-4">
         <MedicalCardPanel userId={a.user_id} />
