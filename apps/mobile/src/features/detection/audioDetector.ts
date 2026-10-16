@@ -12,6 +12,9 @@ import config from '../../../assets/models/distress_config.json';
 
 export type AudioDetection = { score: number; className: string };
 
+/** Live diagnostics for the Guard mode readout: is audio arriving, how loud, is the model running. */
+export type AudioDiagnostics = { chunks: number; level: number; windows: number; lastError: string | null };
+
 const CLASS_NAMES = Object.fromEntries(
   Object.entries({ ...config.primary_classes, ...config.secondary_classes }).map(([name, idx]) => [idx, name]),
 );
@@ -68,6 +71,7 @@ export class AudioDistressDetector {
   private filled = 0;
   private busy = false;
   private vote = new KOfN(config.k_of_n[0], config.k_of_n[1]);
+  readonly diag: AudioDiagnostics = { chunks: 0, level: 0, windows: 0, lastError: null };
 
   static isSupported(): boolean {
     return canCaptureAudio();
@@ -79,6 +83,10 @@ export class AudioDistressDetector {
     const m = await getModel();
     this.stopCapture = await startAudioCapture(
       (chunk) => {
+        let peak = 0;
+        for (let i = 0; i < chunk.length; i++) peak = Math.max(peak, Math.abs(chunk[i]));
+        this.diag.chunks++;
+        this.diag.level = peak;
         // Slide the analysis window: keep the newest WINDOW samples.
         const keep = Math.max(0, this.window.length - chunk.length);
         this.window.copyWithin(0, this.window.length - keep);
@@ -90,10 +98,15 @@ export class AudioDistressDetector {
         m.run([input])
           .then(([out]) => {
             const detection = distressFromScores(new Float32Array(out));
+            this.diag.windows++;
+            this.diag.lastError = null;
             onScore?.(detection);
             if (this.vote.push(detection.score >= config.threshold)) onTrigger(detection);
           })
-          .catch((e) => console.warn('[audio-detector] inference failed', e))
+          .catch((e: Error) => {
+            this.diag.lastError = e?.message ?? String(e);
+            console.warn('[audio-detector] inference failed', e);
+          })
           .finally(() => {
             this.busy = false;
           });
@@ -107,6 +120,7 @@ export class AudioDistressDetector {
     const stop = this.stopCapture;
     this.stopCapture = null;
     this.filled = 0;
+    Object.assign(this.diag, { chunks: 0, level: 0, windows: 0, lastError: null });
     await stop?.();
   }
 }

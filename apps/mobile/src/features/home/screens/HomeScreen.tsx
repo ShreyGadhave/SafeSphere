@@ -28,7 +28,7 @@ export function HomeScreen() {
   const listeningLabel =
     [
       detection.listening.audio &&
-        `listening for screams (hearing ${(detection.audioLevel?.score ?? 0).toFixed(2)}, triggers at ${detection.threshold.toFixed(2)})`,
+        `listening for screams (hearing ${(detection.audioLevel?.score ?? 0).toFixed(3)}, triggers at ${detection.threshold.toFixed(2)})`,
       detection.listening.motion && 'watching for falls',
     ]
       .filter(Boolean)
@@ -114,6 +114,13 @@ export function HomeScreen() {
           accessory={<Toggle value={settings.shake} onValueChange={(v) => void update({ shake: v })} accessibilityLabel="Shake for SOS" />}
         />
       </Card>
+      {detection.guardMode && detection.audioDiag ? (
+        <Text variant="caption" color="ink3">
+          Mic check: {detection.audioDiag.chunks} audio chunks · loudness {detection.audioDiag.level.toFixed(2)} · {detection.audioDiag.windows} windows analysed
+          {detection.audioLevel?.className ? ` · top: ${detection.audioLevel.className}` : ''}
+          {detection.audioDiag.lastError ? ` · model error: ${detection.audioDiag.lastError}` : ''}
+        </Text>
+      ) : null}
       {detection.guardMode && detection.error ? (
         <Text variant="footnote" color="dangerText">
           {detection.error}

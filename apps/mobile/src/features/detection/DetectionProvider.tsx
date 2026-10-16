@@ -6,7 +6,7 @@ import { triggerSos, useSos } from '@/features/sos';
 import { requestPermission } from '@/lib/permissions';
 
 import config from '../../../assets/models/distress_config.json';
-import { type AudioDetection, AudioDistressDetector } from './audioDetector';
+import { type AudioDetection, type AudioDiagnostics, AudioDistressDetector } from './audioDetector';
 import { FallDetector } from './motionDetector';
 
 /**
@@ -24,6 +24,7 @@ type DetectionState = {
   /** Latest scream score (0–1) while listening, for the live readout; threshold is what triggers. */
   audioLevel: AudioDetection | null;
   threshold: number;
+  audioDiag: AudioDiagnostics | null;
   error: string | null;
 };
 
@@ -37,6 +38,7 @@ export function DetectionProvider({ children }: { children: ReactNode }) {
   const [listening, setListening] = useState({ audio: false, motion: false });
   const [error, setError] = useState<string | null>(null);
   const [audioLevel, setAudioLevel] = useState<AudioDetection | null>(null);
+  const [audioDiag, setAudioDiag] = useState<AudioDiagnostics | null>(null);
   const audio = useRef(new AudioDistressDetector());
   const motion = useRef(new FallDetector());
 
@@ -63,11 +65,15 @@ export function DetectionProvider({ children }: { children: ReactNode }) {
       );
       if (!cancelled) setListening((l) => ({ ...l, audio: true }));
     })().catch((e: Error) => !cancelled && setError(`Scream detection could not start: ${e.message}`));
+    // Diagnostics refresh once a second (they also show when no score arrives at all).
+    const poll = setInterval(() => setAudioDiag({ ...detector.diag }), 1000);
     return () => {
       cancelled = true;
+      clearInterval(poll);
       void detector.stop();
       setListening((l) => ({ ...l, audio: false }));
       setAudioLevel(null);
+      setAudioDiag(null);
     };
   }, [wantAudio]);
 
@@ -87,8 +93,8 @@ export function DetectionProvider({ children }: { children: ReactNode }) {
   }, [wantMotion]);
 
   const value = useMemo(
-    () => ({ guardMode, setGuardMode, listening, audioLevel, threshold: config.threshold, error }),
-    [guardMode, listening, audioLevel, error],
+    () => ({ guardMode, setGuardMode, listening, audioLevel, threshold: config.threshold, audioDiag, error }),
+    [guardMode, listening, audioLevel, audioDiag, error],
   );
   return <DetectionContext.Provider value={value}>{children}</DetectionContext.Provider>;
 }
