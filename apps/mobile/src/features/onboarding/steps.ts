@@ -14,10 +14,18 @@ export type OnboardingFacts = {
   profile: ProfileFacts;
   contactCount: number;
   pinsSet: boolean;
+  /** Set when this account already finished onboarding (on this or another device). */
+  onboardedAt?: string | null;
 };
 
-/** First step that still needs doing, so onboarding resumes where the user left off. */
+/**
+ * First step that still needs doing, so onboarding resumes where the user left off.
+ * Returning users (signed out and back in, or a new phone) already have their profile and contacts
+ * on the server; only the safety PINs live on the device and are wiped on sign-out, so they go
+ * straight to the PIN step.
+ */
 export function resolveOnboardingStep(facts: OnboardingFacts): OnboardingStep {
+  if (facts.onboardedAt) return 'pins';
   if (!facts.welcomeSeen) return 'welcome';
   if (!isProfileComplete(facts.profile)) return 'profile';
   if (facts.contactCount < 1) return 'contacts';

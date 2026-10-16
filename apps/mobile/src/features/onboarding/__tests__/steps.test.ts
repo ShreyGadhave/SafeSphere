@@ -15,6 +15,12 @@ describe('resolveOnboardingStep', () => {
     expect(resolveOnboardingStep(done)).toBe('permissions');
   });
 
+  it('sends returning users straight to the PIN step', () => {
+    // Signed out and back in: welcome flag wiped, PINs wiped, profile and contacts on the server.
+    const returning = { welcomeSeen: false, profile, contactCount: 2, pinsSet: false, onboardedAt: '2026-10-16T10:00:00Z' };
+    expect(resolveOnboardingStep(returning)).toBe('pins');
+  });
+
   it('walks the steps in order', () => {
     expect(nextStep('welcome')).toBe('profile');
     expect(nextStep('permissions')).toBeNull();

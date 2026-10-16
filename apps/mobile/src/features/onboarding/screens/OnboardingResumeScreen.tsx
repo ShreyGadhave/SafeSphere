@@ -35,6 +35,7 @@ export function OnboardingResumeScreen() {
     profile: profile.data,
     contactCount: contacts.data?.length ?? 0,
     pinsSet: !!pinsReady,
+    onboardedAt: profile.data?.onboarded_at,
   });
   return <Redirect href={`/onboarding/${step}`} />;
 }
