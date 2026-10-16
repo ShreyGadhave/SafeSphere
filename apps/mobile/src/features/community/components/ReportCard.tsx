@@ -1,11 +1,12 @@
 import { router } from 'expo-router';
 import { CircleCheck, MapPin, MessageSquare } from 'lucide-react-native';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { Card, ScalePressable, Text } from '@/components/ui';
 import { colors, fadeInUp, radius, spacing } from '@/theme';
 
+import { useReportPhoto } from '../hooks/useReportPhoto';
 import { categoryOf, type FeedReport } from '../services/communityApi';
 
 const URGENCY = {
@@ -36,6 +37,7 @@ type Props = {
 export function ReportCard({ report: r, index, now, onToggleConfirm }: Props) {
   const cat = categoryOf(r.category);
   const urgency = r.urgency ? URGENCY[r.urgency] : null;
+  const photo = useReportPhoto(r.mediaPath);
   return (
     <Animated.View entering={fadeInUp(index)}>
       <ScalePressable
@@ -56,7 +58,16 @@ export function ReportCard({ report: r, index, now, onToggleConfirm }: Props) {
               </View>
             ) : null}
           </View>
-          <Text variant="body">{r.description}</Text>
+          <View style={styles.body}>
+            <Text variant="body" numberOfLines={4} style={styles.flex}>
+              {r.description}
+            </Text>
+            {r.mediaPath ? (
+              <View style={styles.thumb}>
+                {photo.data ? <Image source={{ uri: photo.data }} style={styles.thumbImage} accessibilityLabel="Report photo preview" /> : null}
+              </View>
+            ) : null}
+          </View>
           <View style={styles.meta}>
             <MapPin size={14} color={colors.ink3} strokeWidth={1.8} />
             <Text variant="caption" color="ink3" numberOfLines={1} style={styles.flex}>
@@ -92,6 +103,9 @@ const styles = StyleSheet.create({
   cat: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
   dot: { width: 8, height: 8, borderRadius: 4 },
   badge: { paddingHorizontal: spacing.sm, paddingVertical: 3, borderRadius: radius.sm },
+  body: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md },
+  thumb: { width: 72, height: 72, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.fill },
+  thumbImage: { width: '100%', height: '100%' },
   meta: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
   actions: { flexDirection: 'row', gap: spacing.sm, paddingTop: spacing.sm, borderTopWidth: 1, borderTopColor: colors.divider },
   action: {
