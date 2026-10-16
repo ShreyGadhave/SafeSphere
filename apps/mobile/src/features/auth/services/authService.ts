@@ -4,6 +4,7 @@ import type { AuthError } from '@supabase/supabase-js';
 import { clearPins } from '@/lib/pin';
 import { queryClient } from '@/lib/queryClient';
 import { supabase } from '@/lib/supabase';
+import { unregisterPushToken } from '@/features/notifications/push';
 
 import { refreshPinsReady } from '../pinsState';
 
@@ -62,6 +63,8 @@ export async function requestPasswordReset(email: string): Promise<void> {
  * recipients cache and the safety PINs (the next person to sign in sets their own).
  */
 export async function signOut(): Promise<void> {
+  // Needs the session (RLS), so remove this device's push token before signing out.
+  await unregisterPushToken();
   await supabase.auth.signOut();
   queryClient.clear();
   await Promise.all([

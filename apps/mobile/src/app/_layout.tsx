@@ -18,7 +18,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 // Registers background TaskManager tasks; must load before any UI so Android can wake them.
 import '@/features/sos/tasks';
 
-import { AuthProvider } from '@/features/auth';
+import { AuthProvider, useUser } from '@/features/auth';
+import { usePushRegistration } from '@/features/notifications/push';
 import { useAppGate } from '@/features/onboarding';
 import { SosProvider } from '@/features/sos';
 import { queryClient } from '@/lib/queryClient';
@@ -57,6 +58,8 @@ function RootNavigator() {
     Figtree_800ExtraBold,
   });
   const gate = useAppGate();
+  const user = useUser();
+  usePushRegistration(gate === 'ready' ? (user?.id ?? null) : null);
   const ready = (fontsLoaded || !!fontError) && gate !== 'loading';
 
   useEffect(() => {
