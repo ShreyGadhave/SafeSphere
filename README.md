@@ -41,7 +41,7 @@ Android app · Admin dashboard · ML service · 7 machine-learning components ·
 12. [ML API reference](#-ml-api-reference)
 13. [Testing](#-testing)
 14. [Limitations & future scope](#-limitations--future-scope)
-15. [Team](#-team)
+15. [Author](#-author)
 
 ---
 
@@ -523,17 +523,9 @@ cd apps/admin && npm run build && npm run lint
 
 ---
 
-## 👥 Team
+## 👤 Author
 
-| Name | Roll no. |
-|---|---|
-| Aaditya Dubey | 115 |
-| Shrey Gadhave | 116 |
-| Shreya Kargutkar | 123 |
-| Siddhi Sathe | 142 |
-
-**Guide:** Prof. Ujjwala Pandharkar · **HOD:** Dr. Chaitrali Chaudhari · **Principal:** Dr. Subhash Shinde
-Department of Computer Science & Engineering (AI & ML), Lokmanya Tilak College of Engineering, Koparkhairane, Navi Mumbai.
+**Shrey Gadhave** — designed and built SafeSphere end to end (app, dashboard, ML models, backend).
 
 <sub>Map data © OpenStreetMap contributors · Tiles by OpenFreeMap · Crime data: City of Chicago Data Portal · Audio model: YAMNet (Google, AudioSet) · Fall data: UCI Machine Learning Repository.</sub>
 
