@@ -1,0 +1,57 @@
+{
+  "data": "1360 LLM-drafted reports (English / Hinglish / Roman Hindi)",
+  "evaluation": "4-fold StratifiedGroupKFold over generation batches, macro-F1 mean (std)",
+  "tasks": {
+    "category": {
+      "macro_f1_baseline_tfidf_lr": [
+        0.636,
+        0.041
+      ],
+      "macro_f1_tfidf_char_svm": [
+        0.742,
+        0.044
+      ],
+      "per_class_f1": {
+        "accident": 0.768,
+        "assault": 0.629,
+        "fire": 0.876,
+        "harassment": 0.746,
+        "infrastructure": 0.931,
+        "medical": 0.654,
+        "other": 0.501,
+        "suspicious": 0.668,
+        "theft": 0.907
+      }
+    },
+    "urgency": {
+      "macro_f1_baseline_tfidf_lr": [
+        0.483,
+        0.024
+      ],
+      "macro_f1_tfidf_char_svm": [
+        0.462,
+        0.011
+      ],
+      "per_class_f1": {
+        "high": 0.562,
+        "low": 0.335,
+        "medium": 0.489
+      }
+    },
+    "moderation": {
+      "macro_f1_baseline_tfidf_lr": [
+        0.617,
+        0.041
+      ],
+      "macro_f1_tfidf_char_svm": [
+        0.67,
+        0.039
+      ],
+      "per_class_f1": {
+        "abusive": 0.281,
+        "ok": 0.933,
+        "spam": 0.795
+      }
+    }
+  }
+}

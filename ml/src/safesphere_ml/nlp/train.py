@@ -1,8 +1,8 @@
 """ML-6 community report NLP: category, urgency and moderation (spam / abusive) classifiers.
 
 Data: LLM-drafted labelled reports (generate_reports.py) in English, Hinglish and Roman Hindi.
-Split: whole generation batches are held out (GroupShuffleSplit), so near-duplicate posts from
-the same batch never appear in both train and test.
+Split: 4-fold StratifiedGroupKFold — whole generation batches are held out (near-duplicate posts
+from one batch never appear in both train and test) while every class stays in training.
 
 Models per task:
   • baseline: TF-IDF word 1-2 grams + Logistic Regression
@@ -26,7 +26,8 @@ from sklearn.calibration import CalibratedClassifierCV
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, f1_score
-from sklearn.model_selection import GroupShuffleSplit
+import numpy as np
+from sklearn.model_selection import StratifiedGroupKFold
 from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.svm import LinearSVC
 
@@ -68,31 +69,33 @@ def main_model() -> Pipeline:
 def main() -> None:
     df = load()
     print(f"{len(df)} reports | moderation: {df['moderation'].value_counts().to_dict()}")
-    tr_idx, te_idx = next(GroupShuffleSplit(n_splits=1, test_size=0.25, random_state=5).split(df, groups=df["group"]))
-    train, test = df.iloc[tr_idx], df.iloc[te_idx]
-
-    tasks = {
-        "category": (train[train["moderation"] == "ok"], test[test["moderation"] == "ok"]),
-        "urgency": (train[train["moderation"] == "ok"], test[test["moderation"] == "ok"]),
-        "moderation": (train, test),
-    }
+    folds = list(StratifiedGroupKFold(n_splits=4, shuffle=True, random_state=5).split(df, df["batch_kind"], df["group"]))
     OUT.mkdir(parents=True, exist_ok=True)
-    metrics: dict = {"data": f"{len(df)} LLM-drafted reports (English / Hinglish / Roman Hindi); held-out batches", "tasks": {}}
-    for task, (tr, te) in tasks.items():
-        base = baseline().fit(tr["text"], tr[task])
-        model = main_model().fit(tr["text"], tr[task])
-        f1_base = f1_score(te[task], base.predict(te["text"]), average="macro")
-        f1_main = f1_score(te[task], model.predict(te["text"]), average="macro")
+    metrics: dict = {
+        "data": f"{len(df)} LLM-drafted reports (English / Hinglish / Roman Hindi)",
+        "evaluation": "4-fold StratifiedGroupKFold over generation batches, macro-F1 mean (std)",
+        "tasks": {},
+    }
+    for task in ("category", "urgency", "moderation"):
+        rows = df if task == "moderation" else df[df["moderation"] == "ok"]
+        base_f1, main_f1, per_class = [], [], {}
+        for tr_idx, te_idx in folds:
+            tr, te = rows[rows.index.isin(df.index[tr_idx])], rows[rows.index.isin(df.index[te_idx])]
+            base = baseline().fit(tr["text"], tr[task])
+            model = main_model().fit(tr["text"], tr[task])
+            base_f1.append(f1_score(te[task], base.predict(te["text"]), average="macro"))
+            pred = model.predict(te["text"])
+            main_f1.append(f1_score(te[task], pred, average="macro"))
+            for cls, r in classification_report(te[task], pred, output_dict=True, zero_division=0).items():
+                if isinstance(r, dict) and cls not in ("macro avg", "weighted avg"):
+                    per_class.setdefault(cls, []).append(r["f1-score"])
         metrics["tasks"][task] = {
-            "train": len(tr),
-            "test": len(te),
-            "macro_f1_baseline_tfidf_lr": round(float(f1_base), 3),
-            "macro_f1_tfidf_char_svm": round(float(f1_main), 3),
-            "per_class": classification_report(te[task], model.predict(te["text"]), output_dict=True, zero_division=0),
+            "macro_f1_baseline_tfidf_lr": [round(float(np.mean(base_f1)), 3), round(float(np.std(base_f1)), 3)],
+            "macro_f1_tfidf_char_svm": [round(float(np.mean(main_f1)), 3), round(float(np.std(main_f1)), 3)],
+            "per_class_f1": {c: round(float(np.mean(v)), 3) for c, v in per_class.items()},
         }
-        final = main_model().fit(df.loc[df.index.isin(tr.index.union(te.index)), "text"], df.loc[df.index.isin(tr.index.union(te.index)), task])
-        joblib.dump(final, OUT / f"{task}.joblib")
-        print(f"{task:10} baseline {f1_base:.3f}  main {f1_main:.3f}  (train {len(tr)}, test {len(te)})")
+        joblib.dump(main_model().fit(rows["text"], rows[task]), OUT / f"{task}.joblib")
+        print(f"{task:10} baseline {np.mean(base_f1):.3f}  main {np.mean(main_f1):.3f} (+/- {np.std(main_f1):.3f})")
     (OUT / "metrics.json").write_text(json.dumps(metrics, indent=2))
 
 
