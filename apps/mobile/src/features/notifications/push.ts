@@ -74,9 +74,9 @@ export function usePushRegistration(userId: string | null): void {
     const tokenSub = Notifications.addPushTokenListener(() => {
       registerPushToken(userId).catch((e) => console.warn('[push] re-registration failed:', e));
     });
-    const tapSub = Notifications.addNotificationResponseReceivedListener(() => {
-      // TODO(guardians F2): route to the guardian response screen with data.alertId.
-      router.navigate('/');
+    const tapSub = Notifications.addNotificationResponseReceivedListener((response) => {
+      const role = response.notification.request.content.data?.role;
+      router.navigate(role === 'guardian' ? '/guardian' : '/');
     });
     return () => {
       tokenSub.remove();

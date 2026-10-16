@@ -94,7 +94,7 @@ export function PriorityQueue({ data, isLoading, error, onRetry }: PriorityQueue
         <h2 id="queue-title" className="m-0 text-[17px] font-extrabold">
           Alert queue
         </h2>
-        <span className="text-[13px] text-ink-3">Active first, newest on top</span>
+        <span className="text-[13px] text-ink-3">Highest priority first</span>
       </div>
 
       {isLoading && (

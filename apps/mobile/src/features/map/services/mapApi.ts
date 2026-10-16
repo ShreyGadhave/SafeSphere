@@ -45,16 +45,23 @@ function asReasons(value: unknown): Reason[] {
 
 export async function fetchRiskCells(bounds: Bounds, slot: TimeSlot): Promise<RiskCell[]> {
   const [west, south, east, north] = bounds;
-  const { data, error } = await supabase.rpc('risk_cells_in_bbox', {
+  const args = {
     p_min_lng: west,
     p_min_lat: south,
     p_max_lng: east,
     p_max_lat: north,
     p_hour: slot.hour,
     p_day_type: slot.dayType,
-  });
-  if (error) throw error;
-  return (data ?? []).map((r) => ({ h3: r.h3_index, score: r.score, lat: r.lat, lng: r.lng, reasons: asReasons(r.reasons) }));
+  };
+  // PostgREST caps responses at 1,000 rows; a zoomed-out city view has more cells than that.
+  const data = [];
+  for (let from = 0; from < 10_000; from += 1000) {
+    const page = await supabase.rpc('risk_cells_in_bbox', args).range(from, from + 999);
+    if (page.error) throw page.error;
+    data.push(...page.data);
+    if (page.data.length < 1000) break;
+  }
+  return data.map((r) => ({ h3: r.h3_index, score: r.score, lat: r.lat, lng: r.lng, reasons: asReasons(r.reasons) }));
 }
 
 function distanceM(a: LatLng, b: LatLng): number {

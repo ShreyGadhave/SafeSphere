@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { LngLatBounds, Map as MapLibreMap, Marker, NavigationControl, type GeoJSONSource } from 'maplibre-gl'
+import { LngLatBounds, Map as MapLibreMap, Marker, NavigationControl, type GeoJSONSource } from './maplibre'
 import type { FeatureCollection } from 'geojson'
 import { cn } from '@/lib/cn'
 import type { LngLat, MapLine, MapMarker } from '@/types'
@@ -26,6 +26,12 @@ type BaseMapProps = {
   className?: string
   /** Accessible description of what the map shows. */
   label: string
+  /** Risk heatmap points (ML-1); weight 0-1. */
+  heat?: { lng: number; lat: number; weight: number }[]
+  /** Filled polygons (zones), coloured per item. */
+  polygons?: { id: string; ring: LngLat[]; color: string }[]
+  /** Called with the clicked position. */
+  onMapClick?: (point: LngLat) => void
 }
 
 function createMarkerElement(marker: MapMarker): HTMLElement {
@@ -51,6 +57,8 @@ function createMarkerElement(marker: MapMarker): HTMLElement {
 }
 
 const LINE_SOURCE = 'ss-lines'
+const HEAT_SOURCE = 'ss-heat'
+const ZONE_SOURCE = 'ss-zones'
 
 function linesToGeoJson(lines: MapLine[]): FeatureCollection {
   return {
@@ -79,6 +87,9 @@ export function BaseMap({
   interactive = true,
   className,
   label,
+  heat,
+  polygons,
+  onMapClick,
 }: BaseMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<MapLibreMap | null>(null)
@@ -99,6 +110,26 @@ export function BaseMap({
     })
     if (interactive) map.addControl(new NavigationControl({ showCompass: false }), 'top-right')
     map.on('load', () => {
+      const empty: FeatureCollection = { type: 'FeatureCollection', features: [] }
+      map.addSource(HEAT_SOURCE, { type: 'geojson', data: empty })
+      map.addLayer({
+        id: HEAT_SOURCE,
+        type: 'heatmap',
+        source: HEAT_SOURCE,
+        paint: {
+          'heatmap-weight': ['interpolate', ['linear'], ['get', 'weight'], 0, 0, 0.5, 0.12, 0.75, 0.55, 1, 1],
+          'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 9, 0.6, 14, 1.3],
+          'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 9, 8, 12, 24, 15, 60],
+          'heatmap-color': [
+            'interpolate', ['linear'], ['heatmap-density'],
+            0, 'rgba(18,162,107,0)', 0.2, 'rgba(18,162,107,0.22)', 0.45, 'rgba(224,138,0,0.32)',
+            0.75, 'rgba(217,45,58,0.42)', 1, 'rgba(217,45,58,0.58)',
+          ],
+        },
+      })
+      map.addSource(ZONE_SOURCE, { type: 'geojson', data: empty })
+      map.addLayer({ id: `${ZONE_SOURCE}-fill`, type: 'fill', source: ZONE_SOURCE, paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.18 } })
+      map.addLayer({ id: `${ZONE_SOURCE}-line`, type: 'line', source: ZONE_SOURCE, paint: { 'line-color': ['get', 'color'], 'line-width': 2 } })
       map.addSource(LINE_SOURCE, { type: 'geojson', data: linesToGeoJson([]) })
       map.addLayer({
         id: `${LINE_SOURCE}-casing`,
@@ -145,6 +176,47 @@ export function BaseMap({
     source?.setData(linesToGeoJson(lines))
   }, [lines, styleReady])
 
+  useEffect(() => {
+    if (!styleReady) return
+    const source = mapRef.current?.getSource(HEAT_SOURCE) as GeoJSONSource | undefined
+    source?.setData({
+      type: 'FeatureCollection',
+      features: (heat ?? []).map((h) => ({
+        type: 'Feature',
+        properties: { weight: h.weight },
+        geometry: { type: 'Point', coordinates: [h.lng, h.lat] },
+      })),
+    })
+  }, [heat, styleReady])
+
+  useEffect(() => {
+    if (!styleReady) return
+    const source = mapRef.current?.getSource(ZONE_SOURCE) as GeoJSONSource | undefined
+    source?.setData({
+      type: 'FeatureCollection',
+      features: (polygons ?? []).map((z) => ({
+        type: 'Feature',
+        properties: { id: z.id, color: z.color },
+        geometry: { type: 'Polygon', coordinates: [z.ring.map((p) => [p.lng, p.lat])] },
+      })),
+    })
+  }, [polygons, styleReady])
+
+  // Latest click handler without re-creating the map.
+  const clickRef = useRef(onMapClick)
+  useEffect(() => {
+    clickRef.current = onMapClick
+  })
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+    const handler = (e: { lngLat: { lng: number; lat: number } }) => clickRef.current?.({ lng: e.lngLat.lng, lat: e.lngLat.lat })
+    map.on('click', handler)
+    return () => {
+      map.off('click', handler)
+    }
+  }, [])
+
   // Refit only when fitKey changes, so a live trail doesn't fight the user's panning.
   const fitPoints = useRef(fitTo)
   useEffect(() => {
@@ -164,8 +236,10 @@ export function BaseMap({
   }, [fitKey])
 
   return (
-    <div className={cn('relative h-full w-full', className)}>
-      <div ref={containerRef} className="absolute inset-0" role="region" aria-label={label} />
+    // min-h-[inherit]: panels often set only a min-height, and height:100% of that resolves to 0.
+    <div className={cn('relative h-full min-h-[inherit] w-full', className)}>
+      {/* !absolute: maplibre-gl.css sets .maplibregl-map { position: relative }, which would win. */}
+      <div ref={containerRef} className="!absolute inset-0" role="region" aria-label={label} />
       <style>{`
         .ss-marker-halo { animation: ss-halo 1.8s ease-out infinite; }
         @keyframes ss-halo { 0% { transform: scale(.6); opacity: .55 } 100% { transform: scale(2.6); opacity: 0 } }

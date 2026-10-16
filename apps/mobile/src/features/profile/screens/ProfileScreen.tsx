@@ -25,6 +25,7 @@ import {
   Text,
   Toggle,
 } from '@/components/ui';
+import { GuardianCard } from '@/features/guardian';
 import { signOut } from '@/features/auth/services/authService';
 import { ContactList } from '@/features/contacts/components/ContactList';
 import { useContacts } from '@/features/contacts/hooks/useContacts';
@@ -97,6 +98,9 @@ export function ProfileScreen() {
           accessory={missing.length ? <View style={styles.warnDot} accessibilityLabel="Needs attention" /> : undefined}
         />
       </Card>
+
+      <SectionHeader title="Guardian network" />
+      <GuardianCard index={2} />
 
       <SectionHeader title="AI protection" />
       <Card flush entering={fadeInUp(2)}>

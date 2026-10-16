@@ -7,7 +7,8 @@ import { supabase, type Database, type Tables } from '@/lib/supabase';
 export type Profile = Tables<'profiles'>;
 export type ProfileUpdate = Pick<
   Database['public']['Tables']['profiles']['Update'],
-  'full_name' | 'phone' | 'city' | 'onboarded_at'
+  // guardian_status: users may only request (pending) or withdraw; the DB trigger rejects anything else.
+  'full_name' | 'phone' | 'city' | 'onboarded_at' | 'guardian_status' | 'guardian_available'
 >;
 
 export const profileKeys = {

@@ -24,6 +24,7 @@ import { AuthProvider, useUser } from '@/features/auth';
 import { usePushRegistration } from '@/features/notifications/push';
 import { useAppGate } from '@/features/onboarding';
 import { DetectionProvider } from '@/features/detection';
+import { useGuardianPresence } from '@/features/guardian';
 import { SosProvider } from '@/features/sos';
 import { queryClient } from '@/lib/queryClient';
 import { colors } from '@/theme';
@@ -66,6 +67,7 @@ function RootNavigator() {
   });
   const gate = useAppGate();
   const user = useUser();
+  useGuardianPresence();
   usePushRegistration(gate === 'ready' ? (user?.id ?? null) : null);
   const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntentContext();
 
@@ -96,6 +98,7 @@ function RootNavigator() {
         <Stack.Screen name="report/new" />
         <Stack.Screen name="report/[id]" />
         <Stack.Screen name="route-planner" />
+        <Stack.Screen name="guardian" />
       </Stack.Protected>
       <Stack.Protected guard={gate === 'onboarding'}>
         <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
