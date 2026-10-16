@@ -37,6 +37,8 @@ export function MapScreen() {
   const [showPlaces, setShowPlaces] = useState(true);
   const [showIncidents, setShowIncidents] = useState(true);
   const [pin, setPin] = useState<LatLng | null>(null);
+  // The area card can be closed to explore the map; tapping the map opens it again.
+  const [cardOpen, setCardOpen] = useState(true);
   const [bounds, setBounds] = useState<Bounds | null>(null);
 
   const start = position ?? MUMBAI;
@@ -72,7 +74,10 @@ export function MapScreen() {
         incidents={showIncidents ? incidents.data : []}
         user={position}
         pin={pin}
-        onPress={setPin}
+        onPress={(p) => {
+          setPin(p);
+          setCardOpen(true);
+        }}
         onBoundsChange={setBounds}
       />
 
@@ -108,7 +113,7 @@ export function MapScreen() {
             <LocateFixed size={22} color={colors.ink} strokeWidth={1.8} />
           </ScalePressable>
         ) : null}
-        {focus ? (
+        {focus && cardOpen ? (
           <AreaCard
             key={`${focus.lat},${focus.lng}`}
             point={focus}
@@ -117,6 +122,10 @@ export function MapScreen() {
             loading={area.isPending}
             slotLabel={slotLabel}
             nearestPolice={nearestPolice}
+            onClose={() => {
+              setCardOpen(false);
+              setPin(null);
+            }}
           />
         ) : (
           <View style={styles.hint}>

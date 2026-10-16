@@ -1,9 +1,9 @@
 import { router } from 'expo-router';
-import { Navigation, Shield } from 'lucide-react-native';
+import { ChevronLeft, Navigation, Shield } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { Button, Card, Text } from '@/components/ui';
+import { Button, Card, ScalePressable, Text } from '@/components/ui';
 import { colors, fadeInUp, spacing } from '@/theme';
 
 import { type LatLng, type RiskCell, riskLevel, type SafePlace } from '../services/mapApi';
@@ -21,6 +21,8 @@ type AreaCardProps = {
   loading: boolean;
   slotLabel: string;
   nearestPolice?: SafePlace;
+  /** Closes the card so the map can be explored. */
+  onClose?: () => void;
 };
 
 function formatDistance(m: number): string {
@@ -28,7 +30,7 @@ function formatDistance(m: number): string {
 }
 
 /** Bottom card for the tapped/current point: ML-1 score, its SHAP reasons and quick actions. */
-export function AreaCard({ point, name, cell, loading, slotLabel, nearestPolice }: AreaCardProps) {
+export function AreaCard({ point, name, cell, loading, slotLabel, nearestPolice, onClose }: AreaCardProps) {
   const level = cell ? LEVEL[riskLevel(cell.score)] : null;
   const maxImpact = Math.max(1, ...(cell?.reasons ?? []).map((r) => Math.abs(r.impact)));
 
@@ -36,6 +38,11 @@ export function AreaCard({ point, name, cell, loading, slotLabel, nearestPolice 
     <Animated.View entering={fadeInUp(0)}>
       <Card style={styles.card}>
         <View style={styles.header}>
+          {onClose ? (
+            <ScalePressable style={styles.back} accessibilityRole="button" accessibilityLabel="Back to map" onPress={onClose}>
+              <ChevronLeft size={24} color={colors.ink} strokeWidth={2} />
+            </ScalePressable>
+          ) : null}
           <View style={styles.headerText}>
             <Text variant="headline" numberOfLines={1}>
               {name}
@@ -117,6 +124,7 @@ export function AreaCard({ point, name, cell, loading, slotLabel, nearestPolice 
 const styles = StyleSheet.create({
   card: { gap: spacing.md },
   header: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  back: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.fill, alignItems: 'center', justifyContent: 'center' },
   headerText: { flex: 1, gap: 2 },
   badge: { width: 62, height: 62, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   reasons: { gap: spacing.sm },
