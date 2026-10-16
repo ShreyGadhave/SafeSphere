@@ -6,7 +6,7 @@ import { Button, Chip, Text } from '@/components/ui';
 import { colors, spacing } from '@/theme';
 
 import { EMERGENCY_TYPES, SOS_TIMING } from '../constants';
-import { useSos } from '../state/SosProvider';
+import { useSos } from '../state/sosContext';
 import { CountdownRing } from './CountdownRing';
 
 /** 5-second cancel window after the hold completes (B1). One tap cancels — nothing has been sent yet. */

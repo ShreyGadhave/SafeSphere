@@ -2,9 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
 import { router } from 'expo-router';
 import {
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useReducer,
@@ -14,11 +12,13 @@ import {
 } from 'react';
 import { AppState, Vibration } from 'react-native';
 
-import { checkPin, type PinCheck } from '@/lib/pin';
+import { checkPin } from '@/lib/pin';
+
+import { SosContext, type SosContextValue, type TriggerOptions } from './sosContext';
 
 import { ConfirmOverlay } from '../components/ConfirmOverlay';
 import { CountdownOverlay } from '../components/CountdownOverlay';
-import { SOS_TIMING, STORAGE_KEYS, type AlertTrigger, type EmergencyType } from '../constants';
+import { SOS_TIMING, STORAGE_KEYS } from '../constants';
 import type { Fix } from '../services/location';
 import {
   initialSosState,
@@ -41,37 +41,6 @@ import {
 } from '../services/sosEngine';
 
 type Persisted = { state: SosState; timeline: TimelineStep[]; lastFix: Fix | null; shareToken: string | null };
-
-export type SosContextValue = {
-  /** What the UI should show (duress is reported as 'resolved'). */
-  phase: Exclude<SosPhase, 'duress'>;
-  emergencyType: EmergencyType;
-  trigger: AlertTrigger | null;
-  activatedAt: string | null;
-  wrongPinAttempts: number;
-  timeline: TimelineStep[];
-  lastFix: Fix | null;
-  shareToken: string | null;
-  /** Seconds left in the confirm/countdown phase. */
-  secondsLeft: number;
-  trigger$: (options: TriggerOptions) => boolean;
-  setEmergencyType: (type: EmergencyType) => void;
-  cancel: () => void;
-  confirmOk: () => void;
-  /** Skip the rest of the "Are you OK?" wait and go to the 5 s countdown. */
-  escalate: () => void;
-  submitPin: (pin: string) => Promise<PinCheck>;
-  dismiss: () => void;
-};
-
-export type TriggerOptions = {
-  source?: AlertTrigger;
-  type?: EmergencyType;
-  /** AI triggers (motion, audio, ride anomaly) ask "Are you OK?" first (B5). */
-  requireConfirm?: boolean;
-};
-
-const SosContext = createContext<SosContextValue | null>(null);
 
 // Lets code outside React (future AI detectors, notification actions) start an SOS.
 let externalTrigger: ((options: TriggerOptions) => boolean) | null = null;
@@ -282,8 +251,5 @@ export function SosProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useSos(): SosContextValue {
-  const ctx = useContext(SosContext);
-  if (!ctx) throw new Error('useSos must be used inside <SosProvider>');
-  return ctx;
-}
+
+export { useSos, type SosContextValue, type TriggerOptions } from './sosContext';

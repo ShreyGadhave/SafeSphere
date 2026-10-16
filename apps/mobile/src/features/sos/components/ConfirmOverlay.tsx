@@ -6,7 +6,7 @@ import { Button, Text } from '@/components/ui';
 import { colors, radius, spacing } from '@/theme';
 
 import { SOS_TIMING, type AlertTrigger } from '../constants';
-import { useSos } from '../state/SosProvider';
+import { useSos } from '../state/sosContext';
 import { CountdownRing } from './CountdownRing';
 
 const REASON: Partial<Record<AlertTrigger, { title: string; body: string }>> = {

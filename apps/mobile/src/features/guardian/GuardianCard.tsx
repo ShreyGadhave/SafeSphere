@@ -3,7 +3,7 @@ import { HandHeart, Siren } from 'lucide-react-native';
 import { Alert } from 'react-native';
 
 import { Card, ListRow, Toggle } from '@/components/ui';
-import { useProfile, useUpdateProfile } from '@/features/profile';
+import { useProfile, useUpdateProfile } from '@/features/profile/hooks/useProfile';
 import { fadeInUp } from '@/theme';
 
 import { updateGuardianLocation } from './presence';

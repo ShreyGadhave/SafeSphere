@@ -38,6 +38,25 @@ function projectId(): string | undefined {
   return Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
 }
 
+let inflight: Promise<string | null> | null = null;
+
+/**
+ * Registers the token, collapsing concurrent calls (the token listener can fire while the first
+ * registration is still running) and retrying once after a transient failure, e.g. a request
+ * cut off by a hot reload.
+ */
+function registerOnce(userId: string): Promise<string | null> {
+  inflight ??= registerPushToken(userId)
+    .catch(async () => {
+      await new Promise((r) => setTimeout(r, 5000));
+      return registerPushToken(userId);
+    })
+    .finally(() => {
+      inflight = null;
+    });
+  return inflight;
+}
+
 /** Gets this device's Expo push token (asking for permission if needed) and stores it for the user. */
 export async function registerPushToken(userId: string): Promise<string | null> {
   await ensureSosChannel();
@@ -70,9 +89,9 @@ export async function unregisterPushToken(): Promise<void> {
 export function usePushRegistration(userId: string | null): void {
   useEffect(() => {
     if (!userId) return;
-    registerPushToken(userId).catch((e) => console.warn('[push] registration failed:', e));
+    registerOnce(userId).catch((e) => console.warn('[push] registration failed:', e));
     const tokenSub = Notifications.addPushTokenListener(() => {
-      registerPushToken(userId).catch((e) => console.warn('[push] re-registration failed:', e));
+      registerOnce(userId).catch((e) => console.warn('[push] re-registration failed:', e));
     });
     const tapSub = Notifications.addNotificationResponseReceivedListener((response) => {
       const role = response.notification.request.content.data?.role;

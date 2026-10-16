@@ -2,7 +2,7 @@ import * as Location from 'expo-location';
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
-import { useProfile } from '@/features/profile';
+import { useProfile } from '@/features/profile/hooks/useProfile';
 import { toEwkt } from '@/features/sos/services/location';
 import { supabase } from '@/lib/supabase';
 
