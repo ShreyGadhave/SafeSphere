@@ -7,13 +7,13 @@ from typing import Annotated
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
-# Production chat models on Groq's free tier (checked 2026-10-16). Each model has its
-# own quota, so the client rotates through them in this order when one is rate-limited.
+# Chat models available to our Groq key (checked against /openai/v1/models on 2026-10-16).
+# Each model has its own quota, so the client rotates through them in this order when one
+# is rate-limited. qwen3.8-27b is a preview model: last in line, may disappear.
 DEFAULT_GROQ_MODELS = (
     "openai/gpt-oss-20b",
-    "llama-3.1-8b-instant",
     "openai/gpt-oss-120b",
-    "llama-3.3-70b-versatile",
+    "qwen/qwen3.8-27b",
 )
 
 
