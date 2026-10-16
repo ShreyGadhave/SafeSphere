@@ -13,7 +13,7 @@ ReportCategory = Literal[
     "medical",
     "fire",
     "infrastructure",
-    "suspicious_activity",
+    "suspicious",
     "other",
 ]
 

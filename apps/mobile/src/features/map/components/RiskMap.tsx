@@ -23,6 +23,8 @@ type RiskMapProps = {
   zoom?: number;
   cells?: RiskCell[];
   places?: SafePlace[];
+  /** Approved community reports (D2). */
+  incidents?: { lat: number; lng: number; urgency: string | null }[];
   routes?: PlannedRoute[];
   selectedRoute?: number;
   user?: LatLng | null;
@@ -35,7 +37,7 @@ const ROUTE_COLOR = { fastest: colors.iconMuted, balanced: colors.warning, safes
 
 /** Map with the ML-1 risk heatmap, OSM safe places, ML-2 routes and the user's position. */
 export const RiskMap = forwardRef<CameraRef, RiskMapProps>(function RiskMap(
-  { center, zoom = 13, cells, places, routes, selectedRoute = 0, user, pin, onPress, onBoundsChange },
+  { center, zoom = 13, cells, places, incidents, routes, selectedRoute = 0, user, pin, onPress, onBoundsChange },
   cameraRef,
 ) {
   const heat = useMemo<GeoJSON.FeatureCollection>(
@@ -62,6 +64,18 @@ export const RiskMap = forwardRef<CameraRef, RiskMapProps>(function RiskMap(
         })),
     }),
     [places],
+  );
+
+  const incidentsFc = useMemo<GeoJSON.FeatureCollection>(
+    () => ({
+      type: 'FeatureCollection',
+      features: (incidents ?? []).map((r) => ({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [r.lng, r.lat] },
+        properties: { high: r.urgency === 'high' },
+      })),
+    }),
+    [incidents],
   );
 
   const routesFc = useMemo<GeoJSON.FeatureCollection>(
@@ -131,6 +145,19 @@ export const RiskMap = forwardRef<CameraRef, RiskMapProps>(function RiskMap(
             'line-color': ['get', 'color'],
             'line-width': ['case', ['get', 'selected'], 6, 3],
             'line-opacity': ['case', ['get', 'selected'], 1, 0.6],
+          }}
+        />
+      </GeoJSONSource>
+
+      <GeoJSONSource id="incidents" data={incidentsFc}>
+        <Layer
+          id="incidents-dot"
+          type="circle"
+          paint={{
+            'circle-radius': 6,
+            'circle-color': '#FFFFFF',
+            'circle-stroke-color': ['case', ['get', 'high'], colors.danger, colors.warning],
+            'circle-stroke-width': 3,
           }}
         />
       </GeoJSONSource>

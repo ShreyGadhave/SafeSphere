@@ -94,6 +94,7 @@ function RootNavigator() {
         <Stack.Screen name="ride/index" />
         <Stack.Screen name="walk/index" />
         <Stack.Screen name="report/new" />
+        <Stack.Screen name="report/[id]" />
         <Stack.Screen name="route-planner" />
       </Stack.Protected>
       <Stack.Protected guard={gate === 'onboarding'}>

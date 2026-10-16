@@ -1,11 +1,13 @@
 import type { CameraRef } from '@maplibre/maplibre-react-native';
 import { router } from 'expo-router';
 import { Clock, LocateFixed, Search } from 'lucide-react-native';
+import { useQuery } from '@tanstack/react-query';
 import { useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Chip, ScalePressable, Text } from '@/components/ui';
+import { fetchNearbyReports } from '@/features/community/services/communityApi';
 import { colors, layout, radius, shadows, spacing } from '@/theme';
 
 import { AreaCard } from '../components/AreaCard';
@@ -32,6 +34,7 @@ export function MapScreen() {
   const [preset, setPreset] = useState(0);
   const [showRisk, setShowRisk] = useState(true);
   const [showPlaces, setShowPlaces] = useState(true);
+  const [showIncidents, setShowIncidents] = useState(true);
   const [pin, setPin] = useState<LatLng | null>(null);
   const [bounds, setBounds] = useState<Bounds | null>(null);
 
@@ -44,6 +47,13 @@ export function MapScreen() {
   const places = useSafePlaces(focus ?? start);
   const area = useAreaRisk(focus, slot);
   const nearestPolice = places.data?.find((p) => p.kind === 'police');
+  const incidentsAt = focus ?? start;
+  const incidents = useQuery({
+    queryKey: ['mapIncidents', Math.round(incidentsAt.lat * 50), Math.round(incidentsAt.lng * 50)],
+    queryFn: () => fetchNearbyReports(incidentsAt, 10_000),
+    enabled: showIncidents,
+    staleTime: 5 * 60_000,
+  });
 
   const recenter = () => {
     if (!position) return;
@@ -58,6 +68,7 @@ export function MapScreen() {
         center={start}
         cells={showRisk ? cells.data : []}
         places={showPlaces ? places.data : []}
+        incidents={showIncidents ? incidents.data : []}
         user={position}
         pin={pin}
         onPress={setPin}
@@ -77,6 +88,7 @@ export function MapScreen() {
         </Pressable>
         <View style={styles.chips}>
           <Chip label="Risk" selected={showRisk} onPress={() => setShowRisk((v) => !v)} />
+          <Chip label="Incidents" selected={showIncidents} onPress={() => setShowIncidents((v) => !v)} />
           <Chip label="Safe places" selected={showPlaces} onPress={() => setShowPlaces((v) => !v)} />
           <ScalePressable
             style={styles.timeChip}

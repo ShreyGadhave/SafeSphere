@@ -39,3 +39,19 @@ def get_risk_service(request: Request):
 
 def get_routing_service(request: Request):
     return _model_services(request)[1]
+
+
+def get_report_classifier(request: Request):
+    """ML-6 pipelines, loaded on first use."""
+    from app.services.nlp import ReportClassifier
+
+    state = request.app.state
+    if getattr(state, "report_classifier", None) is None:
+        settings = state.settings
+        try:
+            state.report_classifier = ReportClassifier(
+                settings.model_dir / "nlp", settings.database_url or None
+            )
+        except FileNotFoundError as e:
+            raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, detail=f"NLP models missing: {e}") from e
+    return state.report_classifier
