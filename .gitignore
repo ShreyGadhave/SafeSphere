@@ -17,8 +17,8 @@ build/
 web-build/
 *.apk
 *.aab
-android/
-ios/
+/apps/mobile/android/
+/apps/mobile/ios/
 
 # ML data and artifacts (large; regenerate with scripts in ml/)
 ml/data/raw/
