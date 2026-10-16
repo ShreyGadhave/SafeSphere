@@ -1,20 +1,15 @@
 import { router } from 'expo-router';
 import { Activity, Bell, Car, Footprints, Mic, Phone, Route, Smartphone } from 'lucide-react-native';
-import { useState } from 'react';
+import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Card, ListRow, ScalePressable, Screen, SectionHeader, Text, Toggle } from '@/components/ui';
+import { useAreaRisk, useCurrentPosition, riskLevel, slotFor } from '@/features/map';
+import { useProfile, useSafetySettings } from '@/features/profile';
 import { colors, fadeInUp, shadows, spacing } from '@/theme';
 
 import { ActionTile } from '../components/ActionTile';
 import { RiskRingCard } from '../components/RiskRingCard';
-
-// TODO(phase-2): replace with live data — profile name from Supabase, risk from ML-1 (/risk) for the
-// user's current H3 cell, and detector toggles from persisted settings.
-const SAMPLE = {
-  firstName: 'Aisha',
-  risk: { score: 22, level: 'low' as const, area: 'Andheri West', detail: 'Well-lit main road · police station 600 m · updated just now' },
-};
 
 function greeting(date: Date) {
   const h = date.getHours();
@@ -25,9 +20,14 @@ function greeting(date: Date) {
 
 export function HomeScreen() {
   const now = new Date();
-  const [motionOn, setMotionOn] = useState(true);
-  const [screamOn, setScreamOn] = useState(true);
-  const [shakeOn, setShakeOn] = useState(false);
+  const profile = useProfile();
+  const { settings, update } = useSafetySettings();
+  const { position, denied } = useCurrentPosition();
+  const slot = useMemo(() => slotFor(), []);
+  const area = useAreaRisk(position, slot);
+  const firstName = profile.data?.full_name?.split(' ')[0] ?? '';
+  const cell = area.data?.cell ?? null;
+  const reasons = cell?.reasons.slice(0, 2).map((r) => r.label).join(' · ');
 
   return (
     <Screen withTabBar>
@@ -36,19 +36,37 @@ export function HomeScreen() {
           <Text variant="caption" color="ink3" style={styles.date}>
             {now.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}
           </Text>
-          <Text variant="largeTitle">{`${greeting(now)}, ${SAMPLE.firstName}`}</Text>
+          <Text variant="largeTitle">{firstName ? `${greeting(now)}, ${firstName}` : greeting(now)}</Text>
         </View>
         <ScalePressable accessibilityRole="button" accessibilityLabel="Notifications" style={styles.bell}>
           <Bell size={22} color={colors.ink} strokeWidth={1.8} />
         </ScalePressable>
       </View>
 
-      <RiskRingCard {...SAMPLE.risk} />
+      {cell ? (
+        <RiskRingCard
+          score={Math.round(cell.score)}
+          level={riskLevel(cell.score)}
+          area={area.data?.name ?? 'Your area'}
+          detail={reasons ? `${reasons} · updated just now` : 'Updated just now'}
+        />
+      ) : (
+        <Card entering={fadeInUp(0)}>
+          <Text variant="headline">Area risk</Text>
+          <Text variant="caption" color="ink3">
+            {denied
+              ? 'Allow location to see how safe your area is right now.'
+              : area.isFetching || !position
+                ? 'Checking your area…'
+                : 'Risk scores cover Mumbai, Navi Mumbai, Delhi and Pune.'}
+          </Text>
+        </Card>
+      )}
 
       <SectionHeader title="Going somewhere?" />
       <View style={styles.grid}>
         <ActionTile index={0} title="Safe Ride" subtitle="Share your cab link" icon={Car} tint="infoTint" iconColor="info" onPress={() => router.push('/ride')} />
-        <ActionTile index={1} title="Safest route" subtitle="Plan before you go" icon={Route} tint="safeTint" iconColor="safeText" onPress={() => router.push('/map')} />
+        <ActionTile index={1} title="Safest route" subtitle="Plan before you go" icon={Route} tint="safeTint" iconColor="safeText" onPress={() => router.push('/route-planner')} />
         <ActionTile index={2} title="Safe Walk" subtitle="We'll watch your route" icon={Footprints} tint="violetTint" iconColor="violet" onPress={() => router.push('/walk')} />
         <ActionTile index={3} title="Fake call" subtitle="Ring me in 10 s" icon={Phone} tint="warningTint" iconColor="warningTextAlt" onPress={() => router.push('/fake-call')} />
       </View>
@@ -59,20 +77,20 @@ export function HomeScreen() {
           icon={Activity}
           title="Fall & snatch detection"
           subtitle="On-device AI · motion"
-          accessory={<Toggle value={motionOn} onValueChange={setMotionOn} accessibilityLabel="Fall and snatch detection" />}
+          accessory={<Toggle value={settings.fallDetection} onValueChange={(v) => void update({ fallDetection: v })} accessibilityLabel="Fall and snatch detection" />}
         />
         <ListRow
           icon={Mic}
           title="Scream detection"
           subtitle="Listens only during trips"
-          accessory={<Toggle value={screamOn} onValueChange={setScreamOn} accessibilityLabel="Scream detection" />}
+          accessory={<Toggle value={settings.screamDetection} onValueChange={(v) => void update({ screamDetection: v })} accessibilityLabel="Scream detection" />}
         />
         <ListRow
           icon={Smartphone}
           title="Shake for SOS"
           subtitle="3 quick shakes"
           divider={false}
-          accessory={<Toggle value={shakeOn} onValueChange={setShakeOn} accessibilityLabel="Shake for SOS" />}
+          accessory={<Toggle value={settings.shake} onValueChange={(v) => void update({ shake: v })} accessibilityLabel="Shake for SOS" />}
         />
       </Card>
     </Screen>

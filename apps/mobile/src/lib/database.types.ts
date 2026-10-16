@@ -481,7 +481,7 @@ isOneToOne: false
                            },
 "risk_cells_in_bbox":
 { Args: { "p_day_type": Database["public"]['Enums']["day_type"],"p_hour": number,"p_max_lat": number,"p_max_lng": number,"p_min_lat": number,"p_min_lng": number }; Returns: {
-              "h3_index": string,"lat": number,"lng": number,"score": number
+              "h3_index": string,"lat": number,"lng": number,"reasons": Json,"score": number
             }[]
                            }
           }

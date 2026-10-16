@@ -78,6 +78,7 @@ function RootNavigator() {
         <Stack.Screen name="ride/index" />
         <Stack.Screen name="walk/index" />
         <Stack.Screen name="report/new" />
+        <Stack.Screen name="route-planner" />
       </Stack.Protected>
       <Stack.Protected guard={gate === 'onboarding'}>
         <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
