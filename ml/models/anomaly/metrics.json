@@ -1,0 +1,39 @@
+{
+  "data": "600 simulated cab trips on the Mumbai OSM drive graph (25% held out by trip)",
+  "features": [
+    "dev_m",
+    "dev_max_30s",
+    "away_60s",
+    "away_180s",
+    "stopped_s",
+    "speed",
+    "time_ratio",
+    "progress"
+  ],
+  "results": {
+    "rules (on phone)": {
+      "detection_rate": 0.728,
+      "false_alarm_trips": 0.13,
+      "false_alarms_per_trip": 0.174,
+      "median_delay_s": 130.0
+    },
+    "isolation_forest": {
+      "detection_rate": 0.889,
+      "false_alarm_trips": 0.71,
+      "false_alarms_per_trip": 3.029,
+      "median_delay_s": 80.0
+    },
+    "xgboost": {
+      "detection_rate": 1.0,
+      "false_alarm_trips": 0.188,
+      "false_alarms_per_trip": 1.101,
+      "median_delay_s": 50.0
+    },
+    "xgboost + persistence (p>=0.7, 3 fixes)": {
+      "detection_rate": 0.975,
+      "false_alarm_trips": 0.043,
+      "false_alarms_per_trip": 0.116,
+      "median_delay_s": 80.0
+    }
+  }
+}

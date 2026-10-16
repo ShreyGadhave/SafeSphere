@@ -1,6 +1,7 @@
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useSafetySettings } from '@/features/profile';
+import { useActiveTrip } from '@/features/ride/state/tripStore';
 import { triggerSos, useSos } from '@/features/sos';
 
 import { AudioDistressDetector } from './audioDetector';
@@ -9,7 +10,7 @@ import { FallDetector } from './motionDetector';
 /**
  * Runs the on-device AI triggers (ML-3 scream, ML-4 fall) while they are armed:
  *  - Guard mode (switched on from Home), or
- *  - an active Safe Walk / Safe Ride (armed by the trip feature through `setTripArmed`).
+ *  - an active Safe Walk / Safe Ride.
  * Each detector also follows its own toggle in safety settings. Detections never send an SOS
  * directly: they open the 10 s "Are you OK?" check (B5).
  */
@@ -17,7 +18,6 @@ import { FallDetector } from './motionDetector';
 type DetectionState = {
   guardMode: boolean;
   setGuardMode: (on: boolean) => void;
-  setTripArmed: (on: boolean) => void;
   listening: { audio: boolean; motion: boolean };
   error: string | null;
 };
@@ -28,7 +28,7 @@ export function DetectionProvider({ children }: { children: ReactNode }) {
   const { settings } = useSafetySettings();
   const sos = useSos();
   const [guardMode, setGuardMode] = useState(false);
-  const [tripArmed, setTripArmed] = useState(false);
+  const tripArmed = useActiveTrip() != null;
   const [listening, setListening] = useState({ audio: false, motion: false });
   const [error, setError] = useState<string | null>(null);
   const audio = useRef(new AudioDistressDetector());
@@ -70,7 +70,7 @@ export function DetectionProvider({ children }: { children: ReactNode }) {
   }, [wantMotion]);
 
   const value = useMemo(
-    () => ({ guardMode, setGuardMode, setTripArmed, listening, error }),
+    () => ({ guardMode, setGuardMode, listening, error }),
     [guardMode, listening, error],
   );
   return <DetectionContext.Provider value={value}>{children}</DetectionContext.Provider>;

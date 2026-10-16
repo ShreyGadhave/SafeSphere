@@ -1,8 +1,9 @@
-jest.mock('react-native-fast-tflite', () => ({ loadTensorflowModel: jest.fn() }));
-jest.mock('expo-sensors', () => ({ Accelerometer: {}, Gyroscope: {} }));
-
 import { distressFromScores, KOfN } from '../audioDetector';
 import { MotionWindow } from '../motionDetector';
+
+// Hoisted above the imports by Jest.
+jest.mock('react-native-fast-tflite', () => ({ loadTensorflowModel: jest.fn() }));
+jest.mock('expo-sensors', () => ({ Accelerometer: {}, Gyroscope: {} }));
 
 describe('KOfN', () => {
   it('fires on 2 hits within 3 windows, then cools down', () => {

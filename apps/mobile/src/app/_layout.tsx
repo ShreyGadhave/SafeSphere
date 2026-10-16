@@ -8,7 +8,8 @@ import {
 } from '@expo-google-fonts/figtree';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
+import { ShareIntentProvider, useShareIntentContext } from 'expo-share-intent';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -17,6 +18,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Registers background TaskManager tasks; must load before any UI so Android can wake them.
 import '@/features/sos/tasks';
+import '@/features/ride/tasks';
 
 import { AuthProvider, useUser } from '@/features/auth';
 import { usePushRegistration } from '@/features/notifications/push';
@@ -30,20 +32,22 @@ void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <GestureHandlerRootView style={styles.root}>
-          <BottomSheetModalProvider>
-            <StatusBar style="dark" />
-            <SosProvider>
-              <DetectionProvider>
-                <RootNavigator />
-              </DetectionProvider>
-            </SosProvider>
-          </BottomSheetModalProvider>
-        </GestureHandlerRootView>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ShareIntentProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <GestureHandlerRootView style={styles.root}>
+            <BottomSheetModalProvider>
+              <StatusBar style="dark" />
+              <SosProvider>
+                <DetectionProvider>
+                  <RootNavigator />
+                </DetectionProvider>
+              </SosProvider>
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ShareIntentProvider>
   );
 }
 
@@ -63,6 +67,15 @@ function RootNavigator() {
   const gate = useAppGate();
   const user = useUser();
   usePushRegistration(gate === 'ready' ? (user?.id ?? null) : null);
+  const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntentContext();
+
+  // A trip shared from a cab app (Android share menu) opens Safe Ride with the text prefilled.
+  useEffect(() => {
+    if (!hasShareIntent || gate !== 'ready') return;
+    const text = shareIntent.text ?? shareIntent.webUrl;
+    resetShareIntent();
+    if (text) router.push({ pathname: '/ride', params: { shared: text } });
+  }, [hasShareIntent, shareIntent, gate, resetShareIntent]);
   const ready = (fontsLoaded || !!fontError) && gate !== 'loading';
 
   useEffect(() => {

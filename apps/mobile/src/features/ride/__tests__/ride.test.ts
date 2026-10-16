@@ -83,3 +83,16 @@ describe('checkAnomaly', () => {
     expect(checkAnomaly(t, late, 11 * 60 * 1000)?.kind).toBe('overdue');
   });
 });
+
+describe('anomalyProbability (JS port of the XGBoost model)', () => {
+  // Rows and probabilities produced by Python's xgboost on held-out simulated trips.
+   
+  const fixture = require('./fixtures/anomaly_fixture.json') as { rows: number[][]; prob: number[] };
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { anomalyProbability } = require('../services/anomalyModel') as typeof import('../services/anomalyModel');
+
+  it('matches Python predictions on 200 fixes', () => {
+    const diffs = fixture.rows.map((row, i) => Math.abs(anomalyProbability(row) - fixture.prob[i]));
+    expect(Math.max(...diffs)).toBeLessThan(0.01);
+  });
+});
