@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SafeSphere Safe Ride</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2563EB}a:hover{color:#1D4ED8}
+.i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.casing{fill:none;stroke:#D9DCE2;stroke-width:13;stroke-linecap:round}
+.road{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-linecap:round}
+.lane{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-linecap:round}
+.route{fill:none;stroke:#2563EB;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:900;animation:trace 2.4s cubic-bezier(.4,0,.2,1) both}
+@keyframes trace{from{stroke-dashoffset:900}}
+.alt{fill:none;stroke:#9AA3B0;stroke-width:4;stroke-linecap:round;stroke-dasharray:2 9}
+.halo{animation:halo 2.2s ease-out infinite}
+@keyframes halo{0%{transform:scale(.6);opacity:.5}100%{transform:scale(2.2);opacity:0}}
+.livedot{animation:blink 2s ease-in-out infinite}
+@keyframes blink{50%{opacity:.35}}
+.sheet{animation:sheet .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes sheet{from{transform:translateY(60px);opacity:0}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #ECEEE9; color: #0E1726; font-family: 'Figtree', system-ui, sans-serif">
+
+  <svg width="390" height="470" viewBox="0 0 390 470" style="position: absolute; left: 0; top: 0" role="img" aria-label="Route from Andheri to Powai">
+    <rect x="250" y="40" width="110" height="80" rx="20" fill="#DCEAD6"></rect>
+    <path d="M300 300C330 290 360 320 390 310V470H280C270 420 300 380 300 300Z" fill="#D4E4EF"></path>
+    <path class="casing" d="M0 360C120 340 160 250 230 200S340 110 390 90"></path>
+    <path class="casing" d="M40 0C70 140 90 260 70 470"></path>
+    <path class="lane" d="M0 220H390"></path>
+    <path class="lane" d="M180 0V470"></path>
+    <path class="lane" d="M0 120C120 130 240 100 390 140"></path>
+    <path class="road" d="M0 360C120 340 160 250 230 200S340 110 390 90"></path>
+    <path class="road" d="M40 0C70 140 90 260 70 470"></path>
+    <path class="alt" d="M70 380C110 300 160 230 180 140S260 80 318 104"></path>
+    <path class="route" d="M70 380C120 346 160 260 230 200S300 128 318 104"></path>
+  </svg>
+
+  <button aria-label="Back" style="position: absolute; left: 16px; top: 20px; width: 44px; height: 44px; border-radius: 22px; border: 0; background: #FFFFFF; color: #0E1726; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(16,24,40,.1)">
+    <svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg>
+  </button>
+  <div style="position: absolute; right: 16px; top: 24px; height: 36px; padding: 0 14px; border-radius: 18px; background: #FFFFFF; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 14px rgba(16,24,40,.1)">
+    <span class="livedot" style="width: 8px; height: 8px; border-radius: 4px; background: #12A26B"></span>Monitoring
+  </div>
+
+  <div style="position: absolute; left: 140px; top: 262px; width: 36px; height: 36px">
+    <span class="halo" style="position: absolute; inset: 0; border-radius: 18px; background: #2563EB"></span>
+    <span style="position: absolute; inset: 0; border-radius: 18px; background: #0E1726; color: #FFFFFF; display: flex; align-items: center; justify-content: center; border: 3px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 2px 8px rgba(0,0,0,.25)" aria-label="Your cab">
+      <svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13l2-6h12l2 6"></path><rect x="3" y="13" width="18" height="5" rx="1.5"></rect></svg>
+    </span>
+  </div>
+  <div style="position: absolute; left: 304px; top: 72px; color: #D92D3A" aria-label="Destination">
+    <svg width="30" height="36" viewBox="0 0 24 30" aria-hidden="true"><path d="M12 29s-10-8.6-10-16.5a10 10 0 0 1 20 0C22 20.4 12 29 12 29z" fill="#0E1726"></path><circle cx="12" cy="12.5" r="4" fill="#FFFFFF"></circle></svg>
+  </div>
+
+  <section class="sheet" aria-label="Ride details" style="position: absolute; left: 0; right: 0; bottom: 0; top: 420px; background: #F4F5F7; border-radius: 28px 28px 0 0; padding: 10px 16px 24px; box-shadow: 0 -8px 30px rgba(16,24,40,.10); display: flex; flex-direction: column; gap: 12px">
+    <span style="align-self: center; width: 36px; height: 5px; border-radius: 3px; background: #D3D7DE"></span>
+
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; padding: 0 4px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 13px; font-weight: 600; color: #067A55">On the expected route</span>
+        <span style="font-size: 30px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1">Arriving 9:58 PM</span>
+        <span style="font-size: 14px; color: #626B79">Hiranandani Gardens, Powai · 18 min · 7.4 km</span>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 14px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 2px rgba(16,24,40,.05)">
+      <span style="width: 46px; height: 46px; border-radius: 23px; background: #E8ECF2; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: #3A4452">SM</span>
+      <span style="flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0">
+        <span style="font-size: 16px; font-weight: 700">Suresh M.</span>
+        <span style="font-size: 13px; color: #626B79">White Swift Dzire · shared from your cab app</span>
+      </span>
+      <span style="flex: none; padding: 6px 9px; border-radius: 6px; background: #FCD34D; border: 1.5px solid #0E1726; font-size: 13px; font-weight: 800; letter-spacing: .04em; font-variant-numeric: tabular-nums">MH 02 EK 4471</span>
+    </div>
+
+    <div style="background: #FFFFFF; border-radius: 20px; padding: 6px 14px; display: flex; flex-direction: column; box-shadow: 0 1px 2px rgba(16,24,40,.05)">
+      <div style="display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #EEF0F3">
+        <span style="width: 24px; height: 24px; border-radius: 12px; background: #E9F6F0; color: #067A55; display: flex; align-items: center; justify-content: center"><svg class="i" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+        <span style="flex: 1; font-size: 15px; font-weight: 600">Route</span><span style="font-size: 13px; color: #626B79">within 40 m</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #EEF0F3">
+        <span style="width: 24px; height: 24px; border-radius: 12px; background: #E9F6F0; color: #067A55; display: flex; align-items: center; justify-content: center"><svg class="i" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+        <span style="flex: 1; font-size: 15px; font-weight: 600">Stops</span><span style="font-size: 13px; color: #626B79">none unusual</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px; padding: 9px 0">
+        <span style="width: 24px; height: 24px; border-radius: 12px; background: #E9F6F0; color: #067A55; display: flex; align-items: center; justify-content: center"><svg class="i" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+        <span style="flex: 1; font-size: 15px; font-weight: 600">Heading</span><span style="font-size: 13px; color: #626B79">towards Powai</span>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-top: auto">
+      <button style="flex: 1; height: 52px; border-radius: 16px; border: 0; background: #0E1726; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px"><svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5.5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="18.5" r="2.5"></circle><path d="m8.2 10.8 7.6-4.1M8.2 13.2l7.6 4.1"></path></svg>Share live trip</button>
+      <button style="height: 52px; padding: 0 20px; border-radius: 16px; border: 0; background: #E6E8EC; color: #0E1726; font: inherit; font-size: 15px; font-weight: 700">End ride</button>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

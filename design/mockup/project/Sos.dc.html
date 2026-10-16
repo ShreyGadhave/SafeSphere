@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SafeSphere SOS</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2563EB}a:hover{color:#1D4ED8}
+.i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ring{animation:ring 2.6s cubic-bezier(.2,.6,.3,1) infinite}
+.ring2{animation:ring 2.6s cubic-bezier(.2,.6,.3,1) 1.3s infinite}
+@keyframes ring{0%{transform:scale(.78);opacity:.5}100%{transform:scale(1.18);opacity:0}}
+.hold{animation:hold 3s linear infinite}
+@keyframes hold{0%{stroke-dashoffset:691}70%,100%{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F4F5F7; color: #0E1726; font-family: 'Figtree', system-ui, sans-serif">
+  <div style="padding: 28px 20px 0; display: flex; flex-direction: column; gap: 6px">
+    <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.02em">Emergency</h1>
+    <p style="margin: 0; font-size: 15px; color: #4B5563; line-height: 1.45">Press and hold for 3 seconds. You'll get 5 seconds to cancel.</p>
+  </div>
+
+  <div style="position: absolute; left: 55px; top: 128px; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center">
+    <span class="ring" style="position: absolute; inset: 0; border-radius: 140px; background: #F7C9CC"></span>
+    <span class="ring2" style="position: absolute; inset: 0; border-radius: 140px; background: #F7C9CC"></span>
+    <svg width="236" height="236" viewBox="0 0 236 236" style="position: absolute" aria-hidden="true">
+      <circle cx="118" cy="118" r="110" fill="none" stroke="#FFFFFF" style="stroke-width: 6"></circle>
+      <circle class="hold" cx="118" cy="118" r="110" fill="none" stroke="#0E1726" transform="rotate(-90 118 118)" style="stroke-width: 6; stroke-linecap: round; stroke-dasharray: 691"></circle>
+    </svg>
+    <button aria-label="Hold for SOS" style="position: relative; width: 200px; height: 200px; border-radius: 100px; border: 0; background: #D92D3A; color: #FFFFFF; font: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; box-shadow: 0 14px 34px rgba(217,45,58,.38), inset 0 -6px 0 rgba(0,0,0,.08)">
+      <span style="font-size: 48px; font-weight: 800; letter-spacing: .04em; line-height: 1">SOS</span>
+      <span style="font-size: 14px; font-weight: 600; opacity: .9">Hold 3 s</span>
+    </button>
+  </div>
+
+  <div style="position: absolute; left: 20px; right: 20px; top: 428px; display: flex; flex-direction: column; gap: 18px">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: #626B79">WHAT'S HAPPENING? <span style="font-weight: 600; letter-spacing: 0">(optional)</span></h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <button aria-pressed="true" style="height: 38px; padding: 0 14px; border-radius: 19px; border: 2px solid #0E1726; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 14px; font-weight: 700">Medical</button>
+        <button style="height: 38px; padding: 0 14px; border-radius: 19px; border: 2px solid transparent; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 14px; font-weight: 600">Accident</button>
+        <button style="height: 38px; padding: 0 14px; border-radius: 19px; border: 2px solid transparent; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 14px; font-weight: 600">Crime</button>
+        <button style="height: 38px; padding: 0 14px; border-radius: 19px; border: 2px solid transparent; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 14px; font-weight: 600">Harassment</button>
+        <button style="height: 38px; padding: 0 14px; border-radius: 19px; border: 2px solid transparent; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 14px; font-weight: 600">Fire</button>
+        <button style="height: 38px; padding: 0 14px; border-radius: 19px; border: 2px solid transparent; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 14px; font-weight: 600">Other</button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: #626B79">OR CALL DIRECTLY</h2>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+        <a href="#" style="text-decoration: none; color: #0E1726; background: #FFFFFF; border-radius: 16px; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px"><span style="font-size: 20px; font-weight: 800">112</span><span style="font-size: 11px; color: #626B79; font-weight: 600">Emergency</span></a>
+        <a href="#" style="text-decoration: none; color: #0E1726; background: #FFFFFF; border-radius: 16px; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px"><span style="font-size: 20px; font-weight: 800">100</span><span style="font-size: 11px; color: #626B79; font-weight: 600">Police</span></a>
+        <a href="#" style="text-decoration: none; color: #0E1726; background: #FFFFFF; border-radius: 16px; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px"><span style="font-size: 20px; font-weight: 800">108</span><span style="font-size: 11px; color: #626B79; font-weight: 600">Ambulance</span></a>
+        <a href="#" style="text-decoration: none; color: #0E1726; background: #FFFFFF; border-radius: 16px; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px"><span style="font-size: 20px; font-weight: 800">1091</span><span style="font-size: 11px; color: #626B79; font-weight: 600">Women</span></a>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #4B5563">
+      <span style="display: flex">
+        <span style="width: 28px; height: 28px; border-radius: 14px; background: #FDE7D8; border: 2px solid #F4F5F7; font-size: 11px; font-weight: 800; color: #0E1726; display: flex; align-items: center; justify-content: center">M</span>
+        <span style="width: 28px; height: 28px; border-radius: 14px; background: #DCE7FB; border: 2px solid #F4F5F7; font-size: 11px; font-weight: 800; color: #0E1726; display: flex; align-items: center; justify-content: center; margin-left: -8px">R</span>
+        <span style="width: 28px; height: 28px; border-radius: 14px; background: #E3F2E9; border: 2px solid #F4F5F7; font-size: 11px; font-weight: 800; color: #0E1726; display: flex; align-items: center; justify-content: center; margin-left: -8px">P</span>
+      </span>
+      3 contacts and 6 guardians nearby will be alerted
+    </div>
+  </div>
+
+  <nav aria-label="Main" style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px; background: #FFFFFF; border-top: 1px solid #E6E8EC; display: flex; align-items: flex-start; justify-content: space-around; padding-top: 8px; box-sizing: border-box">
+    <a href="Main.dc.html" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V20h14V9.5"></path></svg>Home</a>
+    <a href="Map.dc.html" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6.5v13.5L9 17.5l6 2.5 6-2.5V4l-6 2.5L9 4z"></path><path d="M9 4v13.5M15 6.5V20"></path></svg>Map</a>
+    <a href="SosActive.dc.html" aria-current="page" aria-label="SOS" style="text-decoration: none; margin-top: -22px; width: 62px; height: 62px; border-radius: 31px; background: #0E1726; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; letter-spacing: .04em; box-shadow: 0 6px 16px rgba(14,23,38,.3), 0 0 0 5px #FFFFFF">SOS</a>
+    <a href="Community.dc.html" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.6.8 2.6 2.5 3 5.2"></path></svg>Community</a>
+    <a href="#" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>Profile</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

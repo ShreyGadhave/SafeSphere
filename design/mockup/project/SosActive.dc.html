@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SafeSphere SOS Active</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+a{color:#2563EB}a:hover{color:#1D4ED8}
+.i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.beat{animation:beat 1.2s ease-in-out infinite}
+@keyframes beat{50%{transform:scale(1.35);opacity:.55}}
+.wave span{display:block;width:3px;border-radius:2px;background:#D92D3A;animation:wave 1s ease-in-out infinite}
+@keyframes wave{50%{transform:scaleY(.35)}}
+.step{animation:step .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes step{from{opacity:0;transform:translateX(-8px)}}
+.trail{fill:none;stroke:#D92D3A;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:4 7}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #FFFFFF; color: #0E1726; font-family: 'Figtree', system-ui, sans-serif; display: flex; flex-direction: column">
+
+  <div style="background: #FDEEEF; padding: 26px 20px 22px; display: flex; flex-direction: column; gap: 8px">
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; letter-spacing: .08em; color: #B42330">
+        <span class="beat" style="width: 10px; height: 10px; border-radius: 5px; background: #D92D3A"></span>SOS ACTIVE
+      </span>
+      <span style="font-size: 15px; font-weight: 700; color: #B42330; font-variant-numeric: tabular-nums">02:14</span>
+    </div>
+    <h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.02em">Help is on the way</h1>
+    <p style="margin: 0; font-size: 15px; line-height: 1.45; color: #4B5563">Your contacts can see where you are. Stay on this screen if you can.</p>
+  </div>
+
+  <div style="padding: 16px 16px 0; display: flex; flex-direction: column; gap: 14px; flex: 1">
+    <div style="position: relative; height: 128px; border-radius: 20px; overflow: hidden; background: #ECEEE9">
+      <svg width="358" height="128" viewBox="0 0 358 128" role="img" aria-label="Your live location trail">
+        <path d="M0 80C80 70 140 96 220 60S320 30 358 40" fill="none" stroke="#FFFFFF" style="stroke-width: 10"></path>
+        <path d="M120 0V128" fill="none" stroke="#FFFFFF" style="stroke-width: 5"></path>
+        <path d="M260 0C250 60 270 90 262 128" fill="none" stroke="#FFFFFF" style="stroke-width: 5"></path>
+        <path class="trail" d="M40 78C80 74 110 88 150 84S200 66 214 62"></path>
+        <circle cx="214" cy="62" r="9" fill="#D92D3A" stroke="#FFFFFF" style="stroke-width: 3"></circle>
+      </svg>
+      <span style="position: absolute; left: 12px; bottom: 10px; padding: 5px 10px; border-radius: 10px; background: #FFFFFF; font-size: 12px; font-weight: 700">Live · Andheri West · ±6 m</span>
+    </div>
+
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column">
+      <li class="step" style="display: flex; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid #EEF0F3">
+        <span style="width: 30px; height: 30px; border-radius: 15px; background: #E9F6F0; color: #067A55; display: flex; align-items: center; justify-content: center"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+        <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 700">SMS sent to 3 contacts</span><span style="font-size: 13px; color: #626B79">From your number · works without internet</span></span>
+        <span style="font-size: 12px; color: #626B79">9:41</span>
+      </li>
+      <li class="step" style="display: flex; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid #EEF0F3; animation-delay: .1s">
+        <span style="width: 30px; height: 30px; border-radius: 15px; background: #E9F6F0; color: #067A55; display: flex; align-items: center; justify-content: center"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></span>
+        <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 700">Called Mom</span><span style="font-size: 13px; color: #626B79">Primary contact · 48 s</span></span>
+        <span style="font-size: 12px; color: #626B79">9:41</span>
+      </li>
+      <li class="step" style="display: flex; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid #EEF0F3; animation-delay: .2s">
+        <span style="width: 30px; height: 30px; border-radius: 15px; background: #FDECEC; display: flex; align-items: center; justify-content: center; gap: 2px" class="wave"><span style="height: 8px"></span><span style="height: 14px; animation-delay: .15s"></span><span style="height: 10px; animation-delay: .3s"></span></span>
+        <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 700">Recording audio</span><span style="font-size: 13px; color: #626B79">Uploading every 30 s · 3 clips saved</span></span>
+        <span style="font-size: 12px; font-weight: 700; color: #B42330; font-variant-numeric: tabular-nums">01:52</span>
+      </li>
+      <li class="step" style="display: flex; gap: 12px; align-items: center; padding: 11px 0; animation-delay: .3s">
+        <span style="width: 30px; height: 30px; border-radius: 15px; background: #EAF1FF; color: #2563EB; display: flex; align-items: center; justify-content: center"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 8 7 9.5 4.1-1.5 7-5.2 7-9.5V6z"></path></svg></span>
+        <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 700">2 guardians responding</span><span style="font-size: 13px; color: #626B79">Closest: Rahul K. · 400 m away</span></span>
+        <span style="font-size: 12px; color: #626B79">9:42</span>
+      </li>
+    </ol>
+  </div>
+
+  <div style="padding: 0 16px 24px; display: flex; gap: 10px">
+    <button style="flex: 1; height: 56px; border-radius: 18px; border: 0; background: #0E1726; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 700">I'm safe · enter PIN</button>
+    <a href="#" style="height: 56px; padding: 0 20px; border-radius: 18px; background: #FDEEEF; color: #B42330; font-size: 16px; font-weight: 800; text-decoration: none; display: flex; align-items: center">Call 112</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

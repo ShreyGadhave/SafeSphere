@@ -1,0 +1,23 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-16T12:00:00Z"},
+  "title": "SafeSphere App Concept",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 390, "h": 844, "title": "Home", "radius": 40},
+    "Map.dc.html": {"x": 470, "y": 0, "w": 390, "h": 844, "title": "Safety map", "radius": 40},
+    "SafeRide.dc.html": {"x": 940, "y": 0, "w": 390, "h": 844, "title": "Safe Ride", "radius": 40},
+    "RideAlert.dc.html": {"x": 1410, "y": 0, "w": 390, "h": 844, "title": "Safe Ride: deviation check-in", "radius": 40},
+    "Sos.dc.html": {"x": 1880, "y": 0, "w": 390, "h": 844, "title": "SOS", "radius": 40},
+    "SosActive.dc.html": {"x": 2350, "y": 0, "w": 390, "h": 844, "title": "SOS active", "radius": 40},
+    "Community.dc.html": {"x": 2820, "y": 0, "w": 390, "h": 844, "title": "Community", "radius": 40},
+    "Dashboard.dc.html": {"x": 0, "y": 1264, "w": 1440, "h": 1060, "title": "Admin dashboard", "expand": "fill"}
+  },
+  "order": ["Main.dc.html", "Map.dc.html", "SafeRide.dc.html", "RideAlert.dc.html", "Sos.dc.html", "SosActive.dc.html", "Community.dc.html", "Dashboard.dc.html"],
+  "notes": {
+    "rowApp": {"x": 0, "y": -300, "text": "SafeSphere · Android app", "kind": "title1", "maxW": 3210},
+    "rowAdmin": {"x": 0, "y": 964, "text": "SafeSphere · Admin dashboard", "kind": "title1", "maxW": 1440}
+  },
+  "designSystems": []
+}

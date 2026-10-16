@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SafeSphere Safety Map</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2563EB}a:hover{color:#1D4ED8}
+.i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.casing{fill:none;stroke:#D9DCE2;stroke-width:13;stroke-linecap:round}
+.road{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-linecap:round}
+.lane{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-linecap:round}
+.halo{animation:halo 2.2s ease-out infinite}
+@keyframes halo{0%{transform:scale(.6);opacity:.55}100%{transform:scale(2.4);opacity:0}}
+.breathe{animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.7}}
+.sheet{animation:sheet .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes sheet{from{transform:translateY(60px);opacity:0}}
+.bar{animation:grow 1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{transform:scaleX(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #ECEEE9; color: #0E1726; font-family: 'Figtree', system-ui, sans-serif">
+
+  <svg width="390" height="844" viewBox="0 0 390 844" style="position: absolute; inset: 0" role="img" aria-label="Map of Bandra West with risk heatmap">
+    <defs>
+      <radialGradient id="hotRed"><stop offset="0" style="stop-color: #D92D3A; stop-opacity: .5"></stop><stop offset="1" style="stop-color: #D92D3A; stop-opacity: 0"></stop></radialGradient>
+      <radialGradient id="hotAmber"><stop offset="0" style="stop-color: #F59E0B; stop-opacity: .45"></stop><stop offset="1" style="stop-color: #F59E0B; stop-opacity: 0"></stop></radialGradient>
+      <radialGradient id="coolGreen"><stop offset="0" style="stop-color: #12A26B; stop-opacity: .28"></stop><stop offset="1" style="stop-color: #12A26B; stop-opacity: 0"></stop></radialGradient>
+    </defs>
+    <path d="M0 0H72C58 120 96 220 66 330C42 430 90 520 60 640C42 720 68 790 52 844H0Z" fill="#D4E4EF"></path>
+    <rect x="232" y="140" width="112" height="84" rx="20" fill="#DCEAD6"></rect>
+    <rect x="96" y="560" width="92" height="64" rx="18" fill="#DCEAD6"></rect>
+    <path class="casing" d="M150 0C162 200 138 420 172 844"></path>
+    <path class="casing" d="M60 300C200 282 300 322 390 292"></path>
+    <path class="casing" d="M70 640L390 480"></path>
+    <path class="lane" d="M252 0V844"></path>
+    <path class="lane" d="M80 170H390"></path>
+    <path class="lane" d="M84 420H390"></path>
+    <path class="lane" d="M330 0C320 300 350 520 330 844"></path>
+    <path class="lane" d="M100 0C110 120 96 220 104 300"></path>
+    <path class="road" d="M150 0C162 200 138 420 172 844"></path>
+    <path class="road" d="M60 300C200 282 300 322 390 292"></path>
+    <path class="road" d="M70 640L390 480"></path>
+    <circle class="breathe" cx="176" cy="296" r="96" fill="url(#hotRed)"></circle>
+    <circle class="breathe" cx="306" cy="520" r="78" fill="url(#hotAmber)"></circle>
+    <circle class="breathe" cx="120" cy="660" r="62" fill="url(#hotAmber)"></circle>
+    <circle cx="290" cy="180" r="80" fill="url(#coolGreen)"></circle>
+  </svg>
+
+  <div style="position: absolute; left: 16px; right: 16px; top: 20px; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; gap: 10px">
+      <label style="flex: 1; height: 48px; border-radius: 16px; background: #FFFFFF; display: flex; align-items: center; gap: 10px; padding: 0 14px; box-shadow: 0 4px 14px rgba(16,24,40,.08); color: #626B79">
+        <svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m20 20-4.2-4.2"></path></svg>
+        <input aria-label="Search a place" placeholder="Search a place in Mumbai" style="border: 0; outline: 0; flex: 1; font: inherit; font-size: 15px; color: #0E1726; background: transparent">
+      </label>
+      <button aria-label="Map filters" style="width: 48px; height: 48px; border-radius: 16px; border: 0; background: #FFFFFF; color: #0E1726; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(16,24,40,.08)">
+        <svg class="i" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"></path><circle cx="16" cy="7" r="2"></circle><circle cx="8" cy="17" r="2"></circle></svg>
+      </button>
+    </div>
+    <div style="display: flex; gap: 8px">
+      <button style="height: 34px; padding: 0 14px; border-radius: 17px; border: 0; background: #0E1726; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 700">Risk</button>
+      <button style="height: 34px; padding: 0 14px; border-radius: 17px; border: 0; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 13px; font-weight: 600; box-shadow: 0 2px 8px rgba(16,24,40,.06)">Incidents</button>
+      <button style="height: 34px; padding: 0 14px; border-radius: 17px; border: 0; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 13px; font-weight: 600; box-shadow: 0 2px 8px rgba(16,24,40,.06)">Safe places</button>
+      <button style="height: 34px; padding: 0 12px; border-radius: 17px; border: 0; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(16,24,40,.06)"><svg class="i" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg>9:40 PM</button>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 182px; top: 278px; width: 30px; height: 30px; border-radius: 15px; background: #FFFFFF; border: 2px solid #D92D3A; display: flex; align-items: center; justify-content: center; color: #D92D3A; box-shadow: 0 2px 6px rgba(16,24,40,.15)" aria-label="Reported incident">
+    <svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 2.8 19.5h18.4z"></path><path d="M12 10v4.5M12 17.2v.3"></path></svg>
+  </div>
+  <div style="position: absolute; left: 292px; top: 500px; width: 34px; height: 34px; border-radius: 17px; background: #0E1726; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; box-shadow: 0 0 0 4px rgba(255,255,255,.8)" aria-label="4 incidents">4</div>
+  <div style="position: absolute; left: 262px; top: 236px; width: 32px; height: 32px; border-radius: 10px; background: #2563EB; color: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(37,99,235,.35)" aria-label="Police station">
+    <svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 8 7 9.5 4.1-1.5 7-5.2 7-9.5V6z"></path></svg>
+  </div>
+  <div style="position: absolute; left: 82px; top: 372px; width: 32px; height: 32px; border-radius: 10px; background: #2563EB; color: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(37,99,235,.35)" aria-label="Hospital">
+    <svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+  </div>
+  <div style="position: absolute; left: 200px; top: 392px; width: 20px; height: 20px">
+    <span class="halo" style="position: absolute; inset: 0; border-radius: 10px; background: #2563EB"></span>
+    <span style="position: absolute; inset: 0; border-radius: 10px; background: #2563EB; border: 3px solid #FFFFFF; box-sizing: border-box; box-shadow: 0 1px 4px rgba(0,0,0,.25)"></span>
+  </div>
+
+  <section class="sheet" aria-label="Area safety" style="position: absolute; left: 0; right: 0; bottom: 84px; background: #FFFFFF; border-radius: 28px 28px 0 0; padding: 10px 20px 18px; box-shadow: 0 -8px 30px rgba(16,24,40,.10); display: flex; flex-direction: column; gap: 14px">
+    <span style="align-self: center; width: 36px; height: 5px; border-radius: 3px; background: #D9DCE2"></span>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+        <span style="font-size: 19px; font-weight: 800; letter-spacing: -0.01em">Linking Road, Bandra West</span>
+        <span style="font-size: 13px; color: #626B79">Predicted risk for Thursday, 9:40 PM</span>
+      </div>
+      <div style="flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 18px; background: #FFF4E5; color: #92400E">
+        <span style="font-size: 22px; font-weight: 800; line-height: 1">64</span>
+        <span style="font-size: 10px; font-weight: 700">MEDIUM</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 9px">
+      <span style="font-size: 12px; font-weight: 700; letter-spacing: .06em; color: #626B79">WHY THIS SCORE</span>
+      <div style="display: grid; grid-template-columns: 1fr 96px 34px; align-items: center; gap: 10px; font-size: 14px">
+        <span>Late evening</span><span style="height: 6px; border-radius: 3px; background: #F1F2F4; overflow: hidden"><span class="bar" style="display: block; height: 100%; width: 78%; background: #D92D3A; border-radius: 3px; transform-origin: left"></span></span><span style="text-align: right; font-weight: 700; color: #B42330">+18</span>
+        <span>3 reports in 7 days</span><span style="height: 6px; border-radius: 3px; background: #F1F2F4; overflow: hidden"><span class="bar" style="display: block; height: 100%; width: 62%; background: #D92D3A; border-radius: 3px; transform-origin: left"></span></span><span style="text-align: right; font-weight: 700; color: #B42330">+14</span>
+        <span>Few street lights</span><span style="height: 6px; border-radius: 3px; background: #F1F2F4; overflow: hidden"><span class="bar" style="display: block; height: 100%; width: 40%; background: #D92D3A; border-radius: 3px; transform-origin: left"></span></span><span style="text-align: right; font-weight: 700; color: #B42330">+9</span>
+        <span>Busy main road</span><span style="height: 6px; border-radius: 3px; background: #F1F2F4; overflow: hidden"><span class="bar" style="display: block; height: 100%; width: 28%; background: #12A26B; border-radius: 3px; transform-origin: left"></span></span><span style="text-align: right; font-weight: 700; color: #067A55">−6</span>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px">
+      <button style="flex: 1; height: 50px; border-radius: 16px; border: 0; background: #0E1726; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 700">Safest route here</button>
+      <button style="height: 50px; padding: 0 18px; border-radius: 16px; border: 0; background: #F1F2F4; color: #0E1726; font: inherit; font-size: 15px; font-weight: 700">Report</button>
+    </div>
+  </section>
+
+  <nav aria-label="Main" style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px; background: #FFFFFF; border-top: 1px solid #E6E8EC; display: flex; align-items: flex-start; justify-content: space-around; padding-top: 8px; box-sizing: border-box">
+    <a href="Main.dc.html" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V20h14V9.5"></path></svg>Home</a>
+    <a href="Map.dc.html" aria-current="page" style="text-decoration: none; color: #0E1726; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 700"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6.5v13.5L9 17.5l6 2.5 6-2.5V4l-6 2.5L9 4z"></path><path d="M9 4v13.5M15 6.5V20"></path></svg>Map</a>
+    <a href="Sos.dc.html" aria-label="SOS" style="text-decoration: none; margin-top: -22px; width: 62px; height: 62px; border-radius: 31px; background: #D92D3A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; letter-spacing: .04em; box-shadow: 0 6px 16px rgba(217,45,58,.35), 0 0 0 5px #FFFFFF">SOS</a>
+    <a href="Community.dc.html" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.6.8 2.6 2.5 3 5.2"></path></svg>Community</a>
+    <a href="#" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>Profile</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

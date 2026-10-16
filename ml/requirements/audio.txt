@@ -1,0 +1,8 @@
+# ML-3 audio and ML-4 motion (both export to TFLite).
+# If pip finds no TensorFlow wheel for your Python version, use a Python 3.12 venv (see README).
+-r base.txt
+tensorflow>=2.18,<3
+kagglehub>=0.3          # YAMNet weights (google/yamnet); tensorflow-hub is being retired
+librosa>=0.10
+soundfile>=0.12
+ai-edge-litert>=1.0     # TFLite interpreter for testing exported models on the laptop

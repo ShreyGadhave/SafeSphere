@@ -1,0 +1,8 @@
+# ML-1 features and ML-2 routing. Install after base.txt.
+-r base.txt
+osmnx>=2,<3
+geopandas>=1,<2
+networkx>=3.3,<4
+shapely>=2,<3
+scipy>=1.13
+hdbscan>=0.8.38

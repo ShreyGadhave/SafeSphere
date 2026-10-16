@@ -1,0 +1,15 @@
+pack: pune
+display_name: Pune
+app_cities: [pune]
+timezone: Asia/Kolkata
+
+# Pune Municipal Corporation plus Pimpri-Chinchwad, which together form the urban area.
+osm_places:
+  - Pune, Maharashtra, India
+  - Pimpri-Chinchwad, Maharashtra, India
+
+# [north, south, east, west]
+bbox: [18.72, 18.40, 74.00, 73.70]
+
+h3_resolution: 9
+network_types: [drive, walk]

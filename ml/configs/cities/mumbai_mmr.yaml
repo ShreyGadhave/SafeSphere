@@ -1,0 +1,17 @@
+# Mumbai + Navi Mumbai share one road graph and one risk model: trips cross between them.
+pack: mumbai_mmr
+display_name: Mumbai & Navi Mumbai
+app_cities: [mumbai, navi_mumbai]   # values of the `city` enum in Supabase
+timezone: Asia/Kolkata
+
+# OSMnx place queries (verify each geocodes to the intended boundary before the first download).
+osm_places:
+  - Mumbai City, Maharashtra, India
+  - Mumbai Suburban, Maharashtra, India
+  - Navi Mumbai, Maharashtra, India
+
+# Fallback bounding box: [north, south, east, west] in degrees.
+bbox: [19.30, 18.88, 73.13, 72.76]
+
+h3_resolution: 9
+network_types: [drive, walk]

@@ -1,0 +1,14 @@
+pack: delhi
+display_name: Delhi
+app_cities: [delhi]
+timezone: Asia/Kolkata
+
+# National Capital Territory of Delhi.
+osm_places:
+  - Delhi, India
+
+# [north, south, east, west]
+bbox: [28.89, 28.40, 77.35, 76.83]
+
+h3_resolution: 9
+network_types: [drive, walk]

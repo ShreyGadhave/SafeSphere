@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SafeSphere Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2563EB}a:hover{color:#1D4ED8}
+.i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.gauge{animation:draw 1.4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes draw{from{stroke-dashoffset:251.3}}
+.rise{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+.livedot{animation:blink 2s ease-in-out infinite}
+@keyframes blink{50%{opacity:.35}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F4F5F7; color: #0E1726; font-family: 'Figtree', system-ui, sans-serif; box-sizing: border-box">
+
+  <div style="padding: 28px 20px 0; display: flex; flex-direction: column; gap: 18px">
+
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 14px; font-weight: 500; color: #626B79">Thursday, 16 October</span>
+        <h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.02em">Good evening, Aisha</h1>
+      </div>
+      <button aria-label="Notifications" style="width: 44px; height: 44px; border-radius: 22px; border: 0; background: #FFFFFF; color: #0E1726; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(16,24,40,.06)">
+        <svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"></path><path d="M10 20.5a2 2 0 0 0 4 0"></path></svg>
+      </button>
+    </div>
+
+    <section class="rise" style="background: #FFFFFF; border-radius: 22px; padding: 18px; display: flex; gap: 18px; align-items: center; box-shadow: 0 1px 2px rgba(16,24,40,.05)">
+      <div style="position: relative; width: 96px; height: 96px; flex: none">
+        <svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="Area risk 22 out of 100">
+          <circle cx="48" cy="48" r="40" fill="none" stroke="#E9F6F0" style="stroke-width: 9"></circle>
+          <circle class="gauge" cx="48" cy="48" r="40" fill="none" stroke="#12A26B" transform="rotate(-90 48 48)" style="stroke-width: 9; stroke-linecap: round; stroke-dasharray: 251.3; stroke-dashoffset: 196"></circle>
+        </svg>
+        <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center">
+          <span style="font-size: 28px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">22</span>
+          <span style="font-size: 11px; font-weight: 600; color: #626B79">RISK</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+        <div style="display: flex; align-items: center; gap: 6px">
+          <span class="livedot" style="width: 8px; height: 8px; border-radius: 4px; background: #12A26B"></span>
+          <span style="font-size: 13px; font-weight: 600; color: #067A55">Low risk right now</span>
+        </div>
+        <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.01em">Andheri West</span>
+        <span style="font-size: 13px; color: #626B79; line-height: 1.4">Well-lit main road · police station 600 m · updated just now</span>
+      </div>
+    </section>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: #626B79">GOING SOMEWHERE?</h2>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+        <a href="SafeRide.dc.html" class="rise" style="text-decoration: none; color: #0E1726; background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 1px 2px rgba(16,24,40,.05)">
+          <span style="width: 40px; height: 40px; border-radius: 12px; background: #EAF1FF; color: #2563EB; display: flex; align-items: center; justify-content: center">
+            <svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13l2-6h12l2 6"></path><rect x="3" y="13" width="18" height="5" rx="1.5"></rect><path d="M6.5 18v2M17.5 18v2"></path></svg>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">Safe Ride</span><span style="font-size: 13px; color: #626B79">Share your cab link</span></span>
+        </a>
+        <a href="Map.dc.html" class="rise" style="text-decoration: none; color: #0E1726; background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 1px 2px rgba(16,24,40,.05)">
+          <span style="width: 40px; height: 40px; border-radius: 12px; background: #E9F6F0; color: #067A55; display: flex; align-items: center; justify-content: center">
+            <svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="18" r="2.5"></circle><circle cx="18" cy="6" r="2.5"></circle><path d="M8.5 18H16a3 3 0 0 0 0-6H8a3 3 0 0 1 0-6h7.5"></path></svg>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">Safest route</span><span style="font-size: 13px; color: #626B79">Plan before you go</span></span>
+        </a>
+        <a href="SafeRide.dc.html" class="rise" style="text-decoration: none; color: #0E1726; background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 1px 2px rgba(16,24,40,.05)">
+          <span style="width: 40px; height: 40px; border-radius: 12px; background: #F2EEFF; color: #6D28D9; display: flex; align-items: center; justify-content: center">
+            <svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="13" cy="4.5" r="1.8"></circle><path d="M9.5 21l2.8-7 2.7 2.5V21"></path><path d="M8.5 11.5l3-3.5 3 1.5 2 3"></path><path d="M12.3 14l-.8-6"></path></svg>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">Safe Walk</span><span style="font-size: 13px; color: #626B79">We'll watch your route</span></span>
+        </a>
+        <a href="#" class="rise" style="text-decoration: none; color: #0E1726; background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 1px 2px rgba(16,24,40,.05)">
+          <span style="width: 40px; height: 40px; border-radius: 12px; background: #FFF4E5; color: #B45309; display: flex; align-items: center; justify-content: center">
+            <svg class="i" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1z"></path></svg>
+          </span>
+          <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">Fake call</span><span style="font-size: 13px; color: #626B79">Ring me in 10 s</span></span>
+        </a>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: #626B79">ALWAYS-ON PROTECTION</h2>
+      <div style="background: #FFFFFF; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 2px rgba(16,24,40,.05)">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #EEF0F3">
+          <span style="width: 32px; height: 32px; border-radius: 9px; background: #F4F5F7; display: flex; align-items: center; justify-content: center"><svg class="i" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"></path></svg></span>
+          <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 600">Fall &amp; snatch detection</span><span style="font-size: 12px; color: #626B79">On-device AI · motion</span></span>
+          <span role="switch" aria-checked="true" aria-label="Fall and snatch detection" style="width: 48px; height: 29px; border-radius: 15px; background: #12A26B; position: relative"><span style="position: absolute; top: 2px; right: 2px; width: 25px; height: 25px; border-radius: 13px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,.2)"></span></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #EEF0F3">
+          <span style="width: 32px; height: 32px; border-radius: 9px; background: #F4F5F7; display: flex; align-items: center; justify-content: center"><svg class="i" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0 0 13 0"></path><path d="M12 17.5V21"></path></svg></span>
+          <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 600">Scream detection</span><span style="font-size: 12px; color: #626B79">Listens only during trips</span></span>
+          <span role="switch" aria-checked="true" aria-label="Scream detection" style="width: 48px; height: 29px; border-radius: 15px; background: #12A26B; position: relative"><span style="position: absolute; top: 2px; right: 2px; width: 25px; height: 25px; border-radius: 13px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,.2)"></span></span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px">
+          <span style="width: 32px; height: 32px; border-radius: 9px; background: #F4F5F7; display: flex; align-items: center; justify-content: center"><svg class="i" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="18" rx="2"></rect><path d="M4 8v8M20 8v8"></path></svg></span>
+          <span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 600">Shake for SOS</span><span style="font-size: 12px; color: #626B79">3 quick shakes</span></span>
+          <span role="switch" aria-checked="false" aria-label="Shake for SOS" style="width: 48px; height: 29px; border-radius: 15px; background: #E3E6EB; position: relative"><span style="position: absolute; top: 2px; left: 2px; width: 25px; height: 25px; border-radius: 13px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,.2)"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav aria-label="Main" style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px; background: rgba(255,255,255,.94); border-top: 1px solid #E6E8EC; display: flex; align-items: flex-start; justify-content: space-around; padding-top: 8px; box-sizing: border-box">
+    <a href="Main.dc.html" aria-current="page" style="text-decoration: none; color: #0E1726; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 700"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V20h14V9.5"></path></svg>Home</a>
+    <a href="Map.dc.html" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6.5v13.5L9 17.5l6 2.5 6-2.5V4l-6 2.5L9 4z"></path><path d="M9 4v13.5M15 6.5V20"></path></svg>Map</a>
+    <a href="Sos.dc.html" aria-label="SOS" style="text-decoration: none; margin-top: -22px; width: 62px; height: 62px; border-radius: 31px; background: #D92D3A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; letter-spacing: .04em; box-shadow: 0 6px 16px rgba(217,45,58,.35), 0 0 0 5px #FFFFFF">SOS</a>
+    <a href="Community.dc.html" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.6.8 2.6 2.5 3 5.2"></path></svg>Community</a>
+    <a href="#" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>Profile</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

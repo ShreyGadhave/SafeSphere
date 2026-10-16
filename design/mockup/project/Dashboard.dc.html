@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SafeSphere Admin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2563EB}a:hover{color:#1D4ED8}
+.i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.casing{fill:none;stroke:#D9DCE2;stroke-width:12;stroke-linecap:round}
+.road{fill:none;stroke:#FFFFFF;stroke-width:9;stroke-linecap:round}
+.lane{fill:none;stroke:#FFFFFF;stroke-width:4;stroke-linecap:round}
+.beat{animation:beat 1.2s ease-in-out infinite}
+@keyframes beat{50%{transform:scale(1.35);opacity:.5}}
+.halo{transform-box:fill-box;transform-origin:center;animation:halo 1.8s ease-out infinite}
+@keyframes halo{0%{transform:scale(.6);opacity:.55}100%{transform:scale(2.6);opacity:0}}
+.enter{animation:enter .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}}
+.navlink{color:#4B5563;text-decoration:none}
+.navlink:hover{background:#F4F5F7;color:#0E1726}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="min-height: 1060px; display: flex; flex-wrap: wrap; background: #F4F5F7; color: #0E1726; font-family: 'Figtree', system-ui, sans-serif">
+
+  <aside style="flex: 1 1 220px; max-width: 100%; background: #FFFFFF; border-right: 1px solid #E6E8EC; padding: 24px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+    <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="15" r="14" fill="#0E1726"></circle><path d="M7 17c3 4 13 4 16 0" fill="none" stroke="#3DD39A" style="stroke-width: 2.6; stroke-linecap: round"></path><circle cx="15" cy="11" r="3" fill="#FFFFFF"></circle></svg>
+      <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.01em">SafeSphere</span>
+    </div>
+    <nav aria-label="Admin" style="display: flex; flex-direction: column; gap: 2px">
+      <a href="#" aria-current="page" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: #F1F2F4; color: #0E1726; font-size: 14px; font-weight: 700; text-decoration: none"><svg class="i" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"></path></svg><span style="flex: 1">Live alerts</span><span style="font-size: 12px; font-weight: 800; color: #FFFFFF; background: #D92D3A; padding: 1px 7px; border-radius: 9px">3</span></a>
+      <a href="#" class="navlink" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 600"><svg class="i" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13l2-6h12l2 6"></path><rect x="3" y="13" width="18" height="5" rx="1.5"></rect></svg>Safe Ride trips</a>
+      <a href="#" class="navlink" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 600"><svg class="i" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg><span style="flex: 1">Reports</span><span style="font-size: 12px; font-weight: 700; color: #4B5563">14</span></a>
+      <a href="#" class="navlink" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 600"><svg class="i" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6.5v13.5L9 17.5l6 2.5 6-2.5V4l-6 2.5L9 4z"></path><path d="M9 4v13.5M15 6.5V20"></path></svg>Risk map &amp; zones</a>
+      <a href="#" class="navlink" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 600"><svg class="i" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5.5c0 4.3 2.9 8 7 9.5 4.1-1.5 7-5.2 7-9.5V6z"></path></svg>Guardians</a>
+      <a href="#" class="navlink" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 600"><svg class="i" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>Analytics</a>
+      <a href="#" class="navlink" style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; font-size: 14px; font-weight: 600"><svg class="i" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M9 9h6v6H9z"></path></svg>AI models</a>
+    </nav>
+  </aside>
+
+  <main style="flex: 999 1 560px; min-width: 0; padding: 28px 32px 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+    <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.02em">Live alerts</h1>
+        <span style="font-size: 14px; color: #626B79">Thursday, 16 October · 9:43 PM · sample data</span>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap">
+        <button style="height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid #E1E4E9; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 14px; font-weight: 700">Mumbai + Navi Mumbai</button>
+        <button style="height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid #E1E4E9; background: #FFFFFF; color: #4B5563; font: inherit; font-size: 14px; font-weight: 600">Delhi</button>
+        <button style="height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid #E1E4E9; background: #FFFFFF; color: #4B5563; font: inherit; font-size: 14px; font-weight: 600">Pune</button>
+      </div>
+    </header>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px">
+      <div class="enter" style="background: #FFFFFF; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 13px; font-weight: 600; color: #626B79; display: flex; align-items: center; gap: 6px"><span class="beat" style="width: 8px; height: 8px; border-radius: 4px; background: #D92D3A"></span>Active SOS</span>
+        <span style="font-size: 32px; font-weight: 800; letter-spacing: -0.02em">3</span>
+      </div>
+      <div class="enter" style="background: #FFFFFF; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 6px; animation-delay: .05s">
+        <span style="font-size: 13px; font-weight: 600; color: #626B79">Rides being monitored</span>
+        <span style="font-size: 32px; font-weight: 800; letter-spacing: -0.02em">128</span>
+      </div>
+      <div class="enter" style="background: #FFFFFF; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 6px; animation-delay: .1s">
+        <span style="font-size: 13px; font-weight: 600; color: #626B79">Reports to review</span>
+        <span style="font-size: 32px; font-weight: 800; letter-spacing: -0.02em">14</span>
+      </div>
+      <div class="enter" style="background: #FFFFFF; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 6px; animation-delay: .15s">
+        <span style="font-size: 13px; font-weight: 600; color: #626B79">Median first response</span>
+        <span style="font-size: 32px; font-weight: 800; letter-spacing: -0.02em">3m 40s</span>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch">
+      <section aria-labelledby="queueTitle" style="flex: 1 1 420px; min-width: 0; background: #FFFFFF; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <h2 id="queueTitle" style="margin: 0; font-size: 17px; font-weight: 800">Priority queue</h2>
+          <span style="font-size: 13px; color: #626B79">Sorted by AI triage score</span>
+        </div>
+
+        <article class="enter" style="border: 1px solid #F3C5C9; background: #FFF8F8; border-radius: 16px; padding: 14px; display: flex; gap: 14px">
+          <span style="flex: none; width: 52px; height: 52px; border-radius: 14px; background: #D92D3A; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center"><span style="font-size: 20px; font-weight: 800; line-height: 1">94</span><span style="font-size: 9px; font-weight: 800">HIGH</span></span>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 15px; font-weight: 800">Fall + scream detected</span><span style="font-size: 12px; color: #626B79; flex: none">2 min ago</span></div>
+            <span style="font-size: 13px; color: #4B5563">Aisha K. · Andheri West · not answering check-in</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px">
+              <span style="font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #FFFFFF; border: 1px solid #ECEEF1">Motion model 0.93</span>
+              <span style="font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #FFFFFF; border: 1px solid #ECEEF1">Audio model 0.88</span>
+              <span style="font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #FFFFFF; border: 1px solid #ECEEF1">Area risk 71</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="enter" style="border: 1px solid #F5DDB5; background: #FFFBF3; border-radius: 16px; padding: 14px; display: flex; gap: 14px; animation-delay: .08s">
+          <span style="flex: none; width: 52px; height: 52px; border-radius: 14px; background: #FCE3B6; color: #7A3E06; display: flex; flex-direction: column; align-items: center; justify-content: center"><span style="font-size: 20px; font-weight: 800; line-height: 1">81</span><span style="font-size: 9px; font-weight: 800">HIGH</span></span>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 15px; font-weight: 800">Safe Ride: cab left the route</span><span style="font-size: 12px; color: #626B79; flex: none">5 min ago</span></div>
+            <span style="font-size: 13px; color: #4B5563">Neha S. · Saki Vihar Rd · MH 02 EK 4471 · 420 m off route</span>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px">
+              <span style="font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #FFFFFF; border: 1px solid #ECEEF1">Anomaly 0.91</span>
+              <span style="font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 8px; background: #FFFFFF; border: 1px solid #ECEEF1">Check-in timed out</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="enter" style="border: 1px solid #ECEEF1; border-radius: 16px; padding: 14px; display: flex; gap: 14px; animation-delay: .16s">
+          <span style="flex: none; width: 52px; height: 52px; border-radius: 14px; background: #F1F2F4; color: #0E1726; display: flex; flex-direction: column; align-items: center; justify-content: center"><span style="font-size: 20px; font-weight: 800; line-height: 1">58</span><span style="font-size: 9px; font-weight: 800">MED</span></span>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 15px; font-weight: 800">Manual SOS · Medical</span><span style="font-size: 12px; color: #626B79; flex: none">11 min ago</span></div>
+            <span style="font-size: 13px; color: #4B5563">Rohit P. · Vashi, Navi Mumbai · guardian on the way</span>
+          </div>
+        </article>
+      </section>
+
+      <section aria-label="Alerts map" style="flex: 1.3 1 460px; min-width: 0; min-height: 420px; position: relative; border-radius: 22px; overflow: hidden; background: #ECEEE9">
+        <svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid slice" style="position: absolute; inset: 0; width: 100%; height: 100%" role="img" aria-label="Map of active alerts in Mumbai">
+          <path d="M0 0H110C90 120 140 220 100 330C80 400 120 430 100 460H0Z" fill="#D4E4EF"></path>
+          <path d="M470 0H600V460H520C540 380 480 300 500 200S450 60 470 0Z" fill="#D4E4EF"></path>
+          <rect x="300" y="60" width="120" height="90" rx="22" fill="#DCEAD6"></rect>
+          <path class="casing" d="M210 0C230 160 190 300 240 460"></path>
+          <path class="casing" d="M100 230C260 210 380 260 500 220"></path>
+          <path class="lane" d="M340 0V460"></path>
+          <path class="lane" d="M110 120H480"></path>
+          <path class="lane" d="M110 350H500"></path>
+          <path class="road" d="M210 0C230 160 190 300 240 460"></path>
+          <path class="road" d="M100 230C260 210 380 260 500 220"></path>
+          <circle class="halo" cx="220" cy="200" r="10" fill="#D92D3A"></circle>
+          <circle cx="220" cy="200" r="10" fill="#D92D3A" stroke="#FFFFFF" style="stroke-width: 3"></circle>
+          <circle class="halo" cx="330" cy="300" r="10" fill="#E08A00"></circle>
+          <circle cx="330" cy="300" r="10" fill="#E08A00" stroke="#FFFFFF" style="stroke-width: 3"></circle>
+          <circle cx="460" cy="380" r="9" fill="#0E1726" stroke="#FFFFFF" style="stroke-width: 3"></circle>
+          <circle cx="270" cy="150" r="6" fill="#2563EB" stroke="#FFFFFF" style="stroke-width: 2"></circle>
+          <circle cx="300" cy="330" r="6" fill="#2563EB" stroke="#FFFFFF" style="stroke-width: 2"></circle>
+        </svg>
+        <div style="position: absolute; left: 14px; bottom: 14px; background: #FFFFFF; border-radius: 14px; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; font-weight: 700">
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #D92D3A"></span>High</span>
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #E08A00"></span>Ride anomaly</span>
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #0E1726"></span>Medium</span>
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #2563EB"></span>Guardian</span>
+        </div>
+      </section>
+    </div>
+
+    <section aria-labelledby="modTitle" style="background: #FFFFFF; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+        <h2 id="modTitle" style="margin: 0; font-size: 17px; font-weight: 800">Reports awaiting review</h2>
+        <span style="font-size: 13px; color: #626B79">AI suggests a category; you decide</span>
+      </div>
+      <div style="overflow-x: auto">
+        <table style="width: 100%; min-width: 680px; border-collapse: collapse; font-size: 14px">
+          <thead>
+            <tr style="text-align: left; color: #626B79; font-size: 12px; letter-spacing: .05em">
+              <th style="padding: 8px 10px; font-weight: 700">REPORT</th>
+              <th style="padding: 8px 10px; font-weight: 700">AI CATEGORY</th>
+              <th style="padding: 8px 10px; font-weight: 700">CONFIDENCE</th>
+              <th style="padding: 8px 10px; font-weight: 700">FLAGS</th>
+              <th style="padding: 8px 10px; font-weight: 700; text-align: right">ACTION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-top: 1px solid #EEF0F3">
+              <td style="padding: 12px 10px; max-width: 320px">Chain snatching near Thane station east exit, two men on a bike</td>
+              <td style="padding: 12px 10px; font-weight: 700">Theft</td>
+              <td style="padding: 12px 10px">0.94</td>
+              <td style="padding: 12px 10px; color: #626B79">Similar report 20 min ago</td>
+              <td style="padding: 12px 10px; text-align: right; white-space: nowrap"><button style="height: 34px; padding: 0 12px; border-radius: 10px; border: 0; background: #0E1726; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 700">Approve</button> <button style="height: 34px; padding: 0 12px; border-radius: 10px; border: 0; background: #F1F2F4; color: #0E1726; font: inherit; font-size: 13px; font-weight: 700">Reject</button></td>
+            </tr>
+            <tr style="border-top: 1px solid #EEF0F3">
+              <td style="padding: 12px 10px; max-width: 320px">Open manhole on SV Road, no barricade, very dark</td>
+              <td style="padding: 12px 10px; font-weight: 700">Infrastructure</td>
+              <td style="padding: 12px 10px">0.89</td>
+              <td style="padding: 12px 10px; color: #626B79">None</td>
+              <td style="padding: 12px 10px; text-align: right; white-space: nowrap"><button style="height: 34px; padding: 0 12px; border-radius: 10px; border: 0; background: #0E1726; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 700">Approve</button> <button style="height: 34px; padding: 0 12px; border-radius: 10px; border: 0; background: #F1F2F4; color: #0E1726; font: inherit; font-size: 13px; font-weight: 700">Reject</button></td>
+            </tr>
+            <tr style="border-top: 1px solid #EEF0F3">
+              <td style="padding: 12px 10px; max-width: 320px; color: #626B79">[Message hidden: abusive language]</td>
+              <td style="padding: 12px 10px; font-weight: 700">Harassment</td>
+              <td style="padding: 12px 10px">0.61</td>
+              <td style="padding: 12px 10px; color: #B42330; font-weight: 700">Toxicity 0.87</td>
+              <td style="padding: 12px 10px; text-align: right; white-space: nowrap"><button style="height: 34px; padding: 0 12px; border-radius: 10px; border: 0; background: #0E1726; color: #FFFFFF; font: inherit; font-size: 13px; font-weight: 700">Approve</button> <button style="height: 34px; padding: 0 12px; border-radius: 10px; border: 0; background: #F1F2F4; color: #0E1726; font: inherit; font-size: 13px; font-weight: 700">Reject</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1060}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

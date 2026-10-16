@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Secrets — never commit real keys
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+.expo/
+web-build/
+*.apk
+*.aab
+android/
+ios/
+
+# ML data and artifacts (large; regenerate with scripts in ml/)
+ml/data/raw/
+ml/data/interim/
+ml/data/processed/
+ml/data/cache/
+ml/mlruns/
+ml/models/**/*.pkl
+ml/models/**/*.joblib
+ml/models/**/*.keras
+ml/models/**/*.h5
+ml/models/**/*.onnx
+!ml/models/**/.gitkeep
+
+# Tooling
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/*
+!.vscode/extensions.json
+coverage/
+.pytest_cache/
+.ipynb_checkpoints/
+supabase/.temp/

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SafeSphere Community</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2563EB}a:hover{color:#1D4ED8}
+.i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.rise{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F4F5F7; color: #0E1726; font-family: 'Figtree', system-ui, sans-serif">
+  <div style="padding: 28px 16px 0; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.02em">Community</h1>
+        <span style="font-size: 14px; color: #626B79">Reviewed reports near you</span>
+      </div>
+      <button style="height: 44px; padding: 0 16px 0 12px; border-radius: 22px; border: 0; background: #0E1726; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px"><svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Report</button>
+    </div>
+
+    <div role="tablist" style="display: flex; background: #E6E8EC; border-radius: 12px; padding: 3px">
+      <button role="tab" aria-selected="true" style="flex: 1; height: 34px; border-radius: 10px; border: 0; background: #FFFFFF; color: #0E1726; font: inherit; font-size: 14px; font-weight: 700; box-shadow: 0 1px 3px rgba(16,24,40,.1)">Nearby</button>
+      <button role="tab" aria-selected="false" style="flex: 1; height: 34px; border-radius: 10px; border: 0; background: transparent; color: #4B5563; font: inherit; font-size: 14px; font-weight: 600">All of Mumbai</button>
+    </div>
+
+    <article class="rise" style="background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 2px rgba(16,24,40,.05)">
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <span style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 4px; background: #D92D3A"></span>Harassment</span>
+        <span style="font-size: 12px; font-weight: 700; color: #B42330; background: #FDEEEF; padding: 3px 8px; border-radius: 8px">High urgency</span>
+      </div>
+      <p style="margin: 0; font-size: 16px; line-height: 1.45; font-weight: 500">A group has been following people walking out of Bandra station, exit 2, after 10 PM. Stay on the main road.</p>
+      <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #626B79"><svg class="i" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"></path><circle cx="12" cy="10" r="2.4"></circle></svg>Bandra West · 1.2 km · 35 min ago</div>
+      <div style="display: flex; gap: 8px; padding-top: 4px; border-top: 1px solid #EEF0F3">
+        <button style="flex: 1; height: 38px; border-radius: 12px; border: 0; background: #F4F5F7; color: #0E1726; font: inherit; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="m8.5 12.2 2.4 2.4 4.6-4.8"></path></svg>I saw this too · 12</button>
+        <button style="height: 38px; padding: 0 14px; border-radius: 12px; border: 0; background: #F4F5F7; color: #0E1726; font: inherit; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; margin-top: 8px"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>4</button>
+      </div>
+    </article>
+
+    <article class="rise" style="background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 2px rgba(16,24,40,.05); animation-delay: .08s">
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <span style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 4px; background: #E08A00"></span>Road accident</span>
+        <span style="font-size: 12px; font-weight: 700; color: #92400E; background: #FFF4E5; padding: 3px 8px; border-radius: 8px">Medium</span>
+      </div>
+      <p style="margin: 0; font-size: 16px; line-height: 1.45; font-weight: 500">Two-wheeler skid on the wet Powai flyover, left lane blocked. Traffic police on site.</p>
+      <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #626B79"><svg class="i" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"></path><circle cx="12" cy="10" r="2.4"></circle></svg>Powai · 3.8 km · 2 h ago</div>
+      <div style="display: flex; gap: 8px; padding-top: 4px; border-top: 1px solid #EEF0F3">
+        <button style="flex: 1; height: 38px; border-radius: 12px; border: 0; background: #F4F5F7; color: #0E1726; font: inherit; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="m8.5 12.2 2.4 2.4 4.6-4.8"></path></svg>I saw this too · 8</button>
+        <button style="height: 38px; padding: 0 14px; border-radius: 12px; border: 0; background: #F4F5F7; color: #0E1726; font: inherit; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 6px; margin-top: 8px"><svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg>2</button>
+      </div>
+    </article>
+
+    <article class="rise" style="background: #FFFFFF; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 2px rgba(16,24,40,.05); animation-delay: .16s">
+      <div style="display: flex; align-items: center; justify-content: space-between">
+        <span style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 4px; background: #2563EB"></span>Street lighting</span>
+        <span style="font-size: 12px; font-weight: 700; color: #4B5563; background: #F1F2F4; padding: 3px 8px; border-radius: 8px">Low</span>
+      </div>
+      <p style="margin: 0; font-size: 16px; line-height: 1.45; font-weight: 500">Street lights out along the lane behind Oberoi Mall for three nights now.</p>
+      <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #626B79"><svg class="i" width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"></path><circle cx="12" cy="10" r="2.4"></circle></svg>Goregaon East · 5.1 km · 5 h ago</div>
+    </article>
+  </div>
+
+  <nav aria-label="Main" style="position: absolute; left: 0; right: 0; bottom: 0; height: 84px; background: #FFFFFF; border-top: 1px solid #E6E8EC; display: flex; align-items: flex-start; justify-content: space-around; padding-top: 8px; box-sizing: border-box">
+    <a href="Main.dc.html" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V20h14V9.5"></path></svg>Home</a>
+    <a href="Map.dc.html" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6.5v13.5L9 17.5l6 2.5 6-2.5V4l-6 2.5L9 4z"></path><path d="M9 4v13.5M15 6.5V20"></path></svg>Map</a>
+    <a href="Sos.dc.html" aria-label="SOS" style="text-decoration: none; margin-top: -22px; width: 62px; height: 62px; border-radius: 31px; background: #D92D3A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; letter-spacing: .04em; box-shadow: 0 6px 16px rgba(217,45,58,.35), 0 0 0 5px #FFFFFF">SOS</a>
+    <a href="Community.dc.html" aria-current="page" style="text-decoration: none; color: #0E1726; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 700"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.8c1.6.8 2.6 2.5 3 5.2"></path></svg>Community</a>
+    <a href="#" style="text-decoration: none; color: #8A93A0; display: flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; font-size: 11px; font-weight: 600"><svg class="i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>Profile</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SafeSphere Ride Check-in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F4F5F7}
+a{color:#2563EB}a:hover{color:#1D4ED8}
+.i{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.casing{fill:none;stroke:#D9DCE2;stroke-width:13;stroke-linecap:round}
+.road{fill:none;stroke:#FFFFFF;stroke-width:10;stroke-linecap:round}
+.lane{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-linecap:round}
+.route{fill:none;stroke:#2563EB;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;opacity:.45}
+.off{fill:none;stroke:#D92D3A;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:300;animation:trace 1.6s ease-out both}
+@keyframes trace{from{stroke-dashoffset:300}}
+.count{animation:count 8s linear both}
+@keyframes count{from{stroke-dashoffset:0}to{stroke-dashoffset:276.5}}
+.halo{animation:halo 1.4s ease-out infinite}
+@keyframes halo{0%{transform:scale(.7);opacity:.6}100%{transform:scale(2.4);opacity:0}}
+.sheet{animation:sheet .55s cubic-bezier(.2,.9,.25,1.15) both}
+@keyframes sheet{from{transform:translateY(80px);opacity:0}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #ECEEE9; color: #0E1726; font-family: 'Figtree', system-ui, sans-serif">
+
+  <svg width="390" height="470" viewBox="0 0 390 470" style="position: absolute; left: 0; top: 0" role="img" aria-label="Cab has turned off the route">
+    <rect x="250" y="40" width="110" height="80" rx="20" fill="#DCEAD6"></rect>
+    <path d="M300 300C330 290 360 320 390 310V470H280C270 420 300 380 300 300Z" fill="#D4E4EF"></path>
+    <path class="casing" d="M0 360C120 340 160 250 230 200S340 110 390 90"></path>
+    <path class="casing" d="M40 0C70 140 90 260 70 470"></path>
+    <path class="lane" d="M0 220H390"></path>
+    <path class="lane" d="M180 0V470"></path>
+    <path class="lane" d="M0 120C120 130 240 100 390 140"></path>
+    <path class="road" d="M0 360C120 340 160 250 230 200S340 110 390 90"></path>
+    <path class="road" d="M40 0C70 140 90 260 70 470"></path>
+    <path class="route" d="M70 380C120 346 160 260 230 200S300 128 318 104"></path>
+    <path class="off" d="M178 252C180 230 180 222 120 220S30 222 20 222"></path>
+  </svg>
+  <div style="position: absolute; inset: 0; background: rgba(14,23,38,.32)"></div>
+
+  <div style="position: absolute; left: 22px; top: 204px; width: 36px; height: 36px">
+    <span class="halo" style="position: absolute; inset: 0; border-radius: 18px; background: #D92D3A"></span>
+    <span style="position: absolute; inset: 0; border-radius: 18px; background: #D92D3A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; border: 3px solid #FFFFFF; box-sizing: border-box" aria-label="Your cab, off route">
+      <svg class="i" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13l2-6h12l2 6"></path><rect x="3" y="13" width="18" height="5" rx="1.5"></rect></svg>
+    </span>
+  </div>
+
+  <section class="sheet" role="alertdialog" aria-labelledby="alertTitle" style="position: absolute; left: 12px; right: 12px; bottom: 16px; background: #FFFFFF; border-radius: 32px; padding: 24px 20px 20px; box-shadow: 0 20px 50px rgba(14,23,38,.28); display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center">
+    <div style="position: relative; width: 104px; height: 104px">
+      <svg width="104" height="104" viewBox="0 0 104 104" aria-hidden="true">
+        <circle cx="52" cy="52" r="44" fill="none" stroke="#FDECEC" style="stroke-width: 8"></circle>
+        <circle class="count" cx="52" cy="52" r="44" fill="none" stroke="#D92D3A" transform="rotate(-90 52 52)" style="stroke-width: 8; stroke-linecap: round; stroke-dasharray: 276.5"></circle>
+      </svg>
+      <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center">
+        <span style="font-size: 34px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums">8</span>
+        <span style="font-size: 11px; font-weight: 700; color: #626B79">SECONDS</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <h1 id="alertTitle" style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.02em">Your cab left the route</h1>
+      <p style="margin: 0; font-size: 15px; line-height: 1.45; color: #4B5563">It turned onto Saki Vihar Road, 420 m off route and moving away from Powai. Are you OK?</p>
+    </div>
+    <div style="width: 100%; background: #F7F8FA; border-radius: 16px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; text-align: left; box-sizing: border-box">
+      <span style="display: flex">
+        <span style="width: 30px; height: 30px; border-radius: 15px; background: #FDE7D8; border: 2px solid #F7F8FA; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center">M</span>
+        <span style="width: 30px; height: 30px; border-radius: 15px; background: #DCE7FB; border: 2px solid #F7F8FA; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-left: -8px">R</span>
+        <span style="width: 30px; height: 30px; border-radius: 15px; background: #E3F2E9; border: 2px solid #F7F8FA; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-left: -8px">P</span>
+      </span>
+      <span style="font-size: 13px; color: #4B5563; line-height: 1.35">If you don't answer, <b style="color: #0E1726">Mom, Rohan and Priya</b> get an SOS with the driver and plate.</span>
+    </div>
+    <div style="width: 100%; display: flex; flex-direction: column; gap: 10px">
+      <button style="height: 54px; border-radius: 17px; border: 0; background: #0E1726; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 700">I'm OK · enter PIN</button>
+      <button style="height: 54px; border-radius: 17px; border: 0; background: #D92D3A; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 700">Send SOS now</button>
+    </div>
+    <span style="font-size: 12px; color: #626B79">Detected by Safe Ride · anomaly score 0.91</span>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
