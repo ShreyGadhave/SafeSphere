@@ -1,3 +1,3 @@
-import { WelcomeScreen } from '@/features/auth';
+import { WelcomeScreen } from '@/features/onboarding';
 
 export default WelcomeScreen;

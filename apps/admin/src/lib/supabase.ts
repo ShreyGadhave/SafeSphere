@@ -1,12 +1,15 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { env } from '@/lib/env'
+import type { Database } from '@/types/database.types'
 
-let client: SupabaseClient | null = null
+export type TypedSupabaseClient = SupabaseClient<Database>
 
-/** Shared Supabase client, created on first use so a missing key fails with a clear message. */
-export function getSupabase(): SupabaseClient {
+let client: TypedSupabaseClient | null = null
+
+/** Shared, typed Supabase client, created on first use so a missing key fails with a clear message. */
+export function getSupabase(): TypedSupabaseClient {
   if (!client) {
-    client = createClient(env.supabaseUrl, env.supabaseAnonKey, {
+    client = createClient<Database>(env.supabaseUrl, env.supabaseAnonKey, {
       auth: { persistSession: true, autoRefreshToken: true },
     })
   }

@@ -10,3 +10,7 @@ export { SectionHeader } from './SectionHeader';
 export { TabBar } from './TabBar';
 export { Text } from './Text';
 export { Toggle } from './Toggle';
+export { FormScreen } from './FormScreen';
+export { PinPad } from './PinPad';
+export { ProgressDots } from './ProgressDots';
+export { TextField } from './TextField';

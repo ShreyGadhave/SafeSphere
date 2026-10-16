@@ -1,5 +1,5 @@
-export { WelcomeScreen } from './screens/WelcomeScreen';
+export { AuthProvider, useSession, useUser } from './AuthProvider';
+export { refreshPinsReady, usePinsReady } from './pinsState';
 export { SignInScreen } from './screens/SignInScreen';
 export { SignUpScreen } from './screens/SignUpScreen';
-export { PermissionsScreen } from './screens/PermissionsScreen';
-export { PinsScreen } from './screens/PinsScreen';
+export { friendlyAuthError, requestPasswordReset, signIn, signOut, signUp } from './services/authService';

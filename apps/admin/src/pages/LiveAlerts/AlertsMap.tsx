@@ -1,24 +1,35 @@
 import { useMemo } from 'react'
 import { BaseMap } from '@/components/map/BaseMap'
-import type { MapMarker, PriorityAlert } from '@/types'
+import { alertTone } from '@/lib/alertPresentation'
+import { triggerLabel } from '@/lib/format'
+import { regionById } from '@/lib/regions'
+import type { LiveAlert, MapMarker, Region } from '@/types'
 
 const legend = [
-  { label: 'High', color: 'bg-danger' },
-  { label: 'Ride anomaly', color: 'bg-warning' },
-  { label: 'Medium', color: 'bg-ink' },
+  { label: 'SOS', color: 'bg-danger' },
+  { label: 'Trip check-in', color: 'bg-warning' },
   { label: 'Guardian', color: 'bg-info' },
 ]
 
-export function AlertsMap({ alerts, guardians }: { alerts: PriorityAlert[]; guardians: MapMarker[] }) {
+type AlertsMapProps = { alerts: LiveAlert[]; guardians: MapMarker[]; region: Region }
+
+export function AlertsMap({ alerts, guardians, region }: AlertsMapProps) {
+  const { center, zoom } = regionById(region)
   const markers = useMemo<MapMarker[]>(
     () => [
-      ...alerts.map((alert) => ({
-        id: alert.id,
-        position: alert.position,
-        tone: alert.tone,
-        label: `${alert.title}, ${alert.place}`,
-        pulse: alert.tone !== 'neutral',
-      })),
+      ...alerts.flatMap((alert): MapMarker[] =>
+        alert.position
+          ? [
+              {
+                id: alert.id,
+                position: alert.position,
+                tone: alertTone(alert),
+                label: `${triggerLabel[alert.trigger_source]}, ${alert.person?.full_name ?? 'unknown user'}`,
+                pulse: true,
+              },
+            ]
+          : [],
+      ),
       ...guardians,
     ],
     [alerts, guardians],
@@ -29,7 +40,7 @@ export function AlertsMap({ alerts, guardians }: { alerts: PriorityAlert[]; guar
       aria-label="Alerts map"
       className="relative min-h-[420px] min-w-0 flex-[1.3_1_460px] overflow-hidden rounded-panel bg-[#eceee9]"
     >
-      <BaseMap label="Map of active alerts and guardians" center={{ lng: 72.9, lat: 19.1 }} zoom={10.6} markers={markers} />
+      <BaseMap label="Map of active alerts and available guardians" center={center} zoom={zoom} markers={markers} />
       <div className="absolute bottom-3.5 left-3.5 flex flex-wrap gap-3 rounded-[14px] bg-card px-3 py-2.5 text-xs font-bold shadow-sm">
         {legend.map((item) => (
           <span key={item.label} className="flex items-center gap-1.5">

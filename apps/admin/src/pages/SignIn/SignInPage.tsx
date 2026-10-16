@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router'
+import { Navigate, useLocation, useNavigate } from 'react-router'
+import { useAuth } from '@/app/auth/authContext'
 import { Logo } from '@/components/brand/Logo'
 import { Button, Card } from '@/components/ui'
 import { env } from '@/lib/env'
@@ -8,10 +9,16 @@ import { getSupabase } from '@/lib/supabase'
 /** Admin sign-in with email + password (Supabase Auth). Role checks happen in RequireAdmin. */
 export function SignInPage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const auth = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+
+  const from = (location.state as { from?: string } | null)?.from ?? '/'
+
+  if (auth.status === 'signed_in') return <Navigate to={from} replace />
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault()
@@ -19,8 +26,13 @@ export function SignInPage() {
     setBusy(true)
     try {
       const { error: authError } = await getSupabase().auth.signInWithPassword({ email, password })
-      if (authError) setError(authError.message)
-      else navigate('/', { replace: true })
+      if (authError) {
+        setError(
+          authError.message === 'Invalid login credentials' ? 'That email and password don’t match.' : authError.message,
+        )
+      } else {
+        navigate(from, { replace: true })
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Sign-in failed')
     } finally {
@@ -69,7 +81,7 @@ export function SignInPage() {
               {error}
             </p>
           )}
-          <Button type="submit" disabled={busy || !env.hasSupabase} className="h-11">
+          <Button type="submit" disabled={busy || !env.hasSupabase || auth.status === 'loading'} className="h-11">
             {busy ? 'Signing in…' : 'Sign in'}
           </Button>
         </form>

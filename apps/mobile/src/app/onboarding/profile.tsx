@@ -1,3 +1,3 @@
-import { ProfileSetupScreen } from '@/features/profile';
+import { ProfileStepScreen } from '@/features/onboarding';
 
-export default ProfileSetupScreen;
+export default ProfileStepScreen;

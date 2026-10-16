@@ -1,3 +1,3 @@
-import { PinsScreen } from '@/features/auth';
+import { PinsStepScreen } from '@/features/onboarding';
 
-export default PinsScreen;
+export default PinsStepScreen;

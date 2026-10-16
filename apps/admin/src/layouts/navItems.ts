@@ -4,14 +4,14 @@ export type NavItem = {
   to: string
   label: string
   icon: LucideIcon
-  /** Count shown next to the label. TODO: drive from live Supabase counts. */
-  count?: { value: number; urgent?: boolean }
+  /** Live count shown next to the label (see useNavCounts). */
+  countKey?: 'activeSos' | 'pendingReports'
 }
 
 export const navItems: NavItem[] = [
-  { to: '/', label: 'Live alerts', icon: Activity, count: { value: 3, urgent: true } },
+  { to: '/', label: 'Live alerts', icon: Activity, countKey: 'activeSos' },
   { to: '/trips', label: 'Safe Ride trips', icon: Car },
-  { to: '/reports', label: 'Reports', icon: MessageSquare, count: { value: 14 } },
+  { to: '/reports', label: 'Reports', icon: MessageSquare, countKey: 'pendingReports' },
   { to: '/risk-map', label: 'Risk map & zones', icon: Map },
   { to: '/guardians', label: 'Guardians', icon: Shield },
   { to: '/analytics', label: 'Analytics', icon: ChartColumn },

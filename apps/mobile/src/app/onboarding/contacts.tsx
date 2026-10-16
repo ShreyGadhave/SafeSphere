@@ -1,3 +1,3 @@
-import { ContactsScreen } from '@/features/contacts';
+import { ContactsStepScreen } from '@/features/onboarding';
 
-export default ContactsScreen;
+export default ContactsStepScreen;

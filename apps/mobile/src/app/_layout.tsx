@@ -15,12 +15,40 @@ import { useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+// Registers background TaskManager tasks; must load before any UI so Android can wake them.
+import '@/features/sos/tasks';
+
+import { AuthProvider } from '@/features/auth';
+import { useAppGate } from '@/features/onboarding';
+import { SosProvider } from '@/features/sos';
 import { queryClient } from '@/lib/queryClient';
 import { colors } from '@/theme';
 
 void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <GestureHandlerRootView style={styles.root}>
+          <BottomSheetModalProvider>
+            <StatusBar style="dark" />
+            <SosProvider>
+              <RootNavigator />
+            </SosProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+}
+
+/**
+ * Auth gate: signed-out users only reach (auth); signed-in users who haven't finished setup
+ * (profile, contacts, PINs, permissions) only reach onboarding; everyone else gets the app.
+ * The splash screen stays up until fonts, the session and the profile are known.
+ */
+function RootNavigator() {
   const [fontsLoaded, fontError] = useFonts({
     Figtree_400Regular,
     Figtree_500Medium,
@@ -28,37 +56,33 @@ export default function RootLayout() {
     Figtree_700Bold,
     Figtree_800ExtraBold,
   });
+  const gate = useAppGate();
+  const ready = (fontsLoaded || !!fontError) && gate !== 'loading';
 
   useEffect(() => {
-    if (fontsLoaded || fontError) void SplashScreen.hideAsync();
-  }, [fontsLoaded, fontError]);
+    if (ready) void SplashScreen.hideAsync();
+  }, [ready]);
 
-  if (!fontsLoaded && !fontError) return null;
+  if (!ready) return null;
 
-  // TODO(phase-1): auth gate — read the Supabase session (features/auth) and redirect signed-out
-  // users to /onboarding/welcome, using Stack.Protected guards.
   return (
-    <QueryClientProvider client={queryClient}>
-      <GestureHandlerRootView style={styles.root}>
-        <BottomSheetModalProvider>
-          <StatusBar style="dark" />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: colors.ground },
-            }}
-          >
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="sos-active" options={{ gestureEnabled: false, animation: 'fade' }} />
-            <Stack.Screen
-              name="ride/alert"
-              options={{ presentation: 'transparentModal', animation: 'fade' }}
-            />
-            <Stack.Screen name="fake-call" options={{ presentation: 'fullScreenModal' }} />
-          </Stack>
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
-    </QueryClientProvider>
+    <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.ground } }}>
+      <Stack.Protected guard={gate === 'ready'}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="sos-active" options={{ gestureEnabled: false, animation: 'fade' }} />
+        <Stack.Screen name="ride/alert" options={{ presentation: 'transparentModal', animation: 'fade' }} />
+        <Stack.Screen name="fake-call" options={{ presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="ride/index" />
+        <Stack.Screen name="walk/index" />
+        <Stack.Screen name="report/new" />
+      </Stack.Protected>
+      <Stack.Protected guard={gate === 'onboarding'}>
+        <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
+      </Stack.Protected>
+      <Stack.Protected guard={gate === 'signedOut'}>
+        <Stack.Screen name="(auth)" options={{ animation: 'fade' }} />
+      </Stack.Protected>
+    </Stack>
   );
 }
 

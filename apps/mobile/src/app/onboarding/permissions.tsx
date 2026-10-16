@@ -1,3 +1,3 @@
-import { PermissionsScreen } from '@/features/auth';
+import { PermissionsStepScreen } from '@/features/onboarding';
 
-export default PermissionsScreen;
+export default PermissionsStepScreen;
