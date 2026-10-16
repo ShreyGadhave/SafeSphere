@@ -3,7 +3,7 @@ import { LngLatBounds, Map as MapLibreMap, Marker, NavigationControl, type GeoJS
 import type { FeatureCollection } from 'geojson'
 import { cn } from '@/lib/cn'
 import type { LngLat, MapLine, MapMarker } from '@/types'
-import { MUMBAI_CENTER, OPENFREEMAP_STYLE } from './mapConfig'
+import { MUMBAI_CENTER, OPENFREEMAP_STYLE, RISK_BANDS } from './mapConfig'
 
 const markerColors: Record<MapMarker['tone'], string> = {
   danger: '#D92D3A',
@@ -28,6 +28,9 @@ type BaseMapProps = {
   label: string
   /** Risk heatmap points (ML-1); weight 0-1. */
   heat?: { lng: number; lat: number; weight: number }[]
+  /** Risk cells (ML-1 hexagons) coloured by score 0-100; `selectedCellId` gets an outline. */
+  cells?: { id: string; ring: LngLat[]; score: number }[]
+  selectedCellId?: string | null
   /** Filled polygons (zones), coloured per item. */
   polygons?: { id: string; ring: LngLat[]; color: string }[]
   /** Called with the clicked position. */
@@ -58,6 +61,8 @@ function createMarkerElement(marker: MapMarker): HTMLElement {
 
 const LINE_SOURCE = 'ss-lines'
 const HEAT_SOURCE = 'ss-heat'
+const CELL_SOURCE = 'ss-cells'
+
 const ZONE_SOURCE = 'ss-zones'
 
 function linesToGeoJson(lines: MapLine[]): FeatureCollection {
@@ -88,6 +93,8 @@ export function BaseMap({
   className,
   label,
   heat,
+  cells,
+  selectedCellId,
   polygons,
   onMapClick,
 }: BaseMapProps) {
@@ -126,6 +133,30 @@ export function BaseMap({
             0.75, 'rgba(217,45,58,0.42)', 1, 'rgba(217,45,58,0.58)',
           ],
         },
+      })
+      map.addSource(CELL_SOURCE, { type: 'geojson', data: empty })
+      map.addLayer({
+        id: `${CELL_SOURCE}-fill`,
+        type: 'fill',
+        source: CELL_SOURCE,
+        paint: {
+          'fill-color': ['step', ['get', 'score'], RISK_BANDS[0].color, 45, RISK_BANDS[1].color, 75, RISK_BANDS[2].color],
+          // Darker within a band as the score rises, so 76 and 99 are still distinguishable.
+          'fill-opacity': ['interpolate', ['linear'], ['get', 'score'], 0, 0.12, 44, 0.3, 45, 0.3, 74, 0.5, 75, 0.45, 100, 0.72],
+        },
+      })
+      map.addLayer({
+        id: `${CELL_SOURCE}-line`,
+        type: 'line',
+        source: CELL_SOURCE,
+        paint: { 'line-color': '#ffffff', 'line-width': 0.6, 'line-opacity': 0.7 },
+      })
+      map.addLayer({
+        id: `${CELL_SOURCE}-selected`,
+        type: 'line',
+        source: CELL_SOURCE,
+        filter: ['==', ['get', 'id'], ''],
+        paint: { 'line-color': '#0E1726', 'line-width': 3 },
       })
       map.addSource(ZONE_SOURCE, { type: 'geojson', data: empty })
       map.addLayer({ id: `${ZONE_SOURCE}-fill`, type: 'fill', source: ZONE_SOURCE, paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.18 } })
@@ -188,6 +219,24 @@ export function BaseMap({
       })),
     })
   }, [heat, styleReady])
+
+  useEffect(() => {
+    if (!styleReady) return
+    const source = mapRef.current?.getSource(CELL_SOURCE) as GeoJSONSource | undefined
+    source?.setData({
+      type: 'FeatureCollection',
+      features: (cells ?? []).map((c) => ({
+        type: 'Feature',
+        properties: { id: c.id, score: c.score },
+        geometry: { type: 'Polygon', coordinates: [[...c.ring, c.ring[0]].map((p) => [p.lng, p.lat])] },
+      })),
+    })
+  }, [cells, styleReady])
+
+  useEffect(() => {
+    if (!styleReady) return
+    mapRef.current?.setFilter(`${CELL_SOURCE}-selected`, ['==', ['get', 'id'], selectedCellId ?? ''])
+  }, [selectedCellId, styleReady])
 
   useEffect(() => {
     if (!styleReady) return

@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
+import { cellToBoundary, getResolution, latLngToCell } from 'h3-js'
 import { Trash2 } from 'lucide-react'
 import { BaseMap } from '@/components/map/BaseMap'
+import { RISK_BANDS } from '@/components/map/mapConfig'
 import { Badge, Button, Card, ErrorState, PageHeader } from '@/components/ui'
 import { errorMessage } from '@/lib/errors'
 import { circleRing, useCreateZone, useRiskHeat, useUpdateZone, useZones } from '@/lib/queries'
@@ -15,8 +17,8 @@ type Reason = { label: string; impact: number }
 /** ML-1 risk heatmap per city and hour, cell reasons on click, and safe / unsafe zone management. */
 export function RiskMapPage() {
   const [region, setRegion] = useState<Region>(regions[0].id)
-  const [hour, setHour] = useState(new Date().getHours())
-  const [dayType, setDayType] = useState<'weekday' | 'weekend'>([0, 6].includes(new Date().getDay()) ? 'weekend' : 'weekday')
+  const [hour, setHour] = useState(() => new Date().getHours())
+  const [dayType, setDayType] = useState<'weekday' | 'weekend'>(() => ([0, 6].includes(new Date().getDay()) ? 'weekend' : 'weekday'))
   const [picked, setPicked] = useState<LngLat | null>(null)
   const [form, setForm] = useState({ name: '', kind: 'unsafe' as ZoneKind, radius: 300, nightOnly: true, note: '' })
   const r = regionById(region)
@@ -25,7 +27,26 @@ export function RiskMapPage() {
   const createZone = useCreateZone()
   const updateZone = useUpdateZone()
 
-  const heatPoints = useMemo(() => (heat.data ?? []).map((c) => ({ lng: c.lng, lat: c.lat, weight: c.score / 100 })), [heat.data])
+  // Each street cell is drawn as its own H3 hexagon, coloured by its score (a density heatmap
+  // made every busy area look equally red).
+  const cells = useMemo(
+    () =>
+      (heat.data ?? []).map((c) => ({
+        id: c.h3_index,
+        score: c.score,
+        ring: cellToBoundary(c.h3_index).map(([lat, lng]) => ({ lat, lng })),
+      })),
+    [heat.data],
+  )
+  const summary = useMemo(() => {
+    const scores = (heat.data ?? []).map((c) => c.score)
+    if (scores.length === 0) return null
+    return {
+      high: scores.filter((x) => x >= 75).length,
+      medium: scores.filter((x) => x >= 45 && x < 75).length,
+      low: scores.filter((x) => x < 45).length,
+    }
+  }, [heat.data])
   const polygons = useMemo(
     () =>
       [
@@ -34,16 +55,11 @@ export function RiskMapPage() {
       ],
     [zones.data, picked, form.radius, form.kind],
   )
-  // Nearest cell to the clicked point: its score and SHAP reasons.
+  // The hexagon under the clicked point: its score and SHAP reasons.
   const cell = useMemo(() => {
     if (!picked || !heat.data?.length) return null
-    let best = heat.data[0]
-    let bestD = Infinity
-    for (const c of heat.data) {
-      const d = (c.lng - picked.lng) ** 2 + (c.lat - picked.lat) ** 2
-      if (d < bestD) [best, bestD] = [c, d]
-    }
-    return Math.sqrt(bestD) < 0.008 ? best : null
+    const id = latLngToCell(picked.lat, picked.lng, getResolution(heat.data[0].h3_index))
+    return heat.data.find((c) => c.h3_index === id) ?? null
   }, [picked, heat.data])
   const markers: MapMarker[] = picked ? [{ id: 'picked', position: picked, tone: 'neutral', label: 'Selected point' }] : []
 
@@ -51,7 +67,7 @@ export function RiskMapPage() {
     <div className="flex flex-col gap-5">
       <PageHeader
         title="Risk map & zones"
-        subtitle="Predicted incident risk by hour (ML-1). Click the map to inspect a spot or add a zone."
+        subtitle="Predicted street-incident risk per ~0.7 km² hexagon for the chosen hour (ML-1). Scores are percentiles across the city and all hours: 90 means riskier than 90 % of city cell-hours."
         actions={
           <div className="flex flex-wrap gap-2">
             {regions.map((x) => (
@@ -80,7 +96,31 @@ export function RiskMapPage() {
 
       <div className="flex flex-wrap items-stretch gap-4">
         <section aria-label="Risk heatmap" className="relative min-h-[520px] min-w-0 flex-[1.6_1_520px] overflow-hidden rounded-panel bg-[#eceee9]">
-          <BaseMap label="Risk heatmap" center={r.center} zoom={r.zoom} heat={heatPoints} polygons={polygons} markers={markers} onMapClick={setPicked} />
+          <BaseMap
+            label="Risk map: street cells coloured by predicted risk"
+            center={r.center}
+            zoom={r.zoom}
+            cells={cells}
+            selectedCellId={cell?.h3_index ?? null}
+            polygons={polygons}
+            markers={markers}
+            onMapClick={setPicked}
+          />
+          <div className="absolute bottom-3 left-3 flex flex-col gap-1.5 rounded-tile bg-white/95 px-3 py-2 text-xs shadow">
+            <span className="font-bold">Risk at {String(hour).padStart(2, '0')}:00</span>
+            {RISK_BANDS.map((b) => (
+              <span key={b.label} className="flex items-center gap-2">
+                <span className="size-3 rounded-sm" style={{ background: b.color }} aria-hidden="true" />
+                {b.label} <span className="text-ink-3">{b.range}</span>
+                {summary && (
+                  <span className="ml-auto pl-2 font-semibold">
+                    {b.label === 'High' ? summary.high : b.label === 'Medium' ? summary.medium : summary.low}
+                  </span>
+                )}
+              </span>
+            ))}
+            <span className="max-w-[220px] text-ink-3">Darker = higher within the band. Click a hexagon for its score and reasons.</span>
+          </div>
         </section>
 
         <div className="flex min-w-0 flex-[1_1_320px] flex-col gap-4">
