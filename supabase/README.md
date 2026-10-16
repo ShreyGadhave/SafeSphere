@@ -27,6 +27,23 @@ Get-ChildItem supabase\migrations\*.sql | Sort-Object Name | ForEach-Object {
 
 (or paste each file into the Supabase SQL editor, in order).
 
+## Testing the security rules
+
+```powershell
+& "C:\Program Files\PostgreSQL\17\bin\psql.exe" $env:DATABASE_URL -v ON_ERROR_STOP=1 -f supabase\tests\rls_smoke.sql
+```
+Runs inside one transaction and rolls back; every check prints `PASS …` or aborts.
+
+## Regenerating TypeScript types
+
+After any migration, regenerate the types both apps import:
+
+```bash
+npx supabase@latest gen types typescript --db-url "$DATABASE_URL" --schema public > /tmp/db.types.ts
+# then copy into apps/mobile/src/lib/database.types.ts and apps/admin/src/types/database.types.ts
+# (keep the two-line "Generated…" header)
+```
+
 ## Security model
 - Users only reach their own rows. Moderators/admins (`profiles.role`) read everything.
 - Guardians see alerts only through `nearby_active_alerts()` (verified, ≤10 km, active only).
