@@ -1,0 +1,21 @@
+{
+  "model": "yamnet.tflite",
+  "sample_rate": 16000,
+  "window_samples": 15600,
+  "hop_samples": 8000,
+  "primary_classes": {
+    "Screaming": 11,
+    "Shout": 6,
+    "Yell": 9
+  },
+  "secondary_classes": {
+    "Crying, sobbing": 19,
+    "Wail, moan": 22
+  },
+  "secondary_weight": 0.0,
+  "k_of_n": [
+    2,
+    3
+  ],
+  "threshold": 0.3
+}

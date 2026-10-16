@@ -1,0 +1,114 @@
+{
+  "calibration_set": "ESC-50 (2,000 clips, 2.78 h, no screams)",
+  "target_false_prompts_per_hour": 1.0,
+  "chosen": {
+    "threshold": 0.3,
+    "false_prompts": 0,
+    "per_hour": 0.0
+  },
+  "sweep": [
+    {
+      "threshold": 0.05,
+      "false_prompts": 38,
+      "per_hour": 13.68
+    },
+    {
+      "threshold": 0.1,
+      "false_prompts": 18,
+      "per_hour": 6.48
+    },
+    {
+      "threshold": 0.15,
+      "false_prompts": 4,
+      "per_hour": 1.44
+    },
+    {
+      "threshold": 0.2,
+      "false_prompts": 4,
+      "per_hour": 1.44
+    },
+    {
+      "threshold": 0.25,
+      "false_prompts": 4,
+      "per_hour": 1.44
+    },
+    {
+      "threshold": 0.3,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.35,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.4,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.45,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.5,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.55,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.6,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.65,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.7,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.75,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.8,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.85,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.9,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    },
+    {
+      "threshold": 0.95,
+      "false_prompts": 0,
+      "per_hour": 0.0
+    }
+  ],
+  "triggering_categories_at_threshold": {},
+  "highest_mean_peak_categories": {
+    "crying_baby": 0.10599999874830246,
+    "laughing": 0.04899999871850014,
+    "cat": 0.03799999877810478,
+    "crow": 0.03500000014901161,
+    "door_wood_creaks": 0.028999999165534973
+  }
+}

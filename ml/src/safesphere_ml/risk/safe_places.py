@@ -11,12 +11,11 @@ from __future__ import annotations
 import json
 import sys
 
-import osmnx as ox
 import pandas as pd
 import psycopg
 
 from safesphere_ml.common.cities import CITY_PACKS
-from safesphere_ml.risk.osm_features import TAGS, bbox_for, configure_osmnx, with_mirrors
+from safesphere_ml.risk.osm_features import bbox_for, fetch_pois
 from safesphere_ml.risk.score_cities import app_city, database_url
 
 KIND_BY_AMENITY = {"police": "police", "hospital": "hospital", "clinic": "hospital", "pharmacy": "pharmacy", "fuel": "fuel"}
@@ -24,9 +23,7 @@ TYPE_CODE = {"node": 1, "way": 2, "relation": 3}
 
 
 def collect(pack: str) -> pd.DataFrame:
-    configure_osmnx()
-    north, south, east, west = bbox_for(pack)
-    feats = with_mirrors(lambda: ox.features_from_bbox((west, south, east, north), TAGS), f"{pack} POIs")
+    feats = fetch_pois(pack, bbox_for(pack))
 
     amenity = feats["amenity"] if "amenity" in feats else pd.Series(index=feats.index, dtype=object)
     railway = feats["railway"] if "railway" in feats else pd.Series(index=feats.index, dtype=object)
@@ -53,6 +50,7 @@ def publish(pack: str, places: pd.DataFrame) -> None:
     places = places.assign(city=[app_city(pack, lng) for lng in places["lng"]])
     cities = sorted(places["city"].unique())
     with psycopg.connect(database_url()) as conn, conn.cursor() as cur:
+        cur.execute("set statement_timeout = 0")  # bulk upload; the default 2 min is too short
         cur.execute("delete from public.safe_places where city = any(%s::public.city[])", (cities,))
         with cur.copy("copy public.safe_places (osm_id, kind, name, city, location, phone, open_24h, tags) from stdin") as copy:
             for r in places.itertuples(index=False):

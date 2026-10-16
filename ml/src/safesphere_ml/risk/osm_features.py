@@ -25,6 +25,7 @@ from sklearn.neighbors import BallTree
 
 from safesphere_ml.common.cities import load_city
 from safesphere_ml.common.paths import INTERIM_DIR, OSMNX_CACHE_DIR, configure_caches, ensure_dirs
+from safesphere_ml.risk import osm_source
 
 H3_RES = 8
 EARTH_RADIUS_M = 6_371_000
@@ -100,6 +101,29 @@ def with_mirrors(fetch, label: str):
     raise RuntimeError(f"all Overpass mirrors failed for {label}") from last
 
 
+def fetch_pois(name: str, bbox: list[float]):
+    """POIs from the local Geofabrik extract when present, else from Overpass."""
+    north, south, east, west = bbox
+    if osm_source.pbf_for(name):
+        print(f"[{name}] reading POIs from local OSM extract")
+        return osm_source.load_pois(name, bbox, TAGS)
+    configure_osmnx()
+    return with_mirrors(lambda: ox.features_from_bbox((west, south, east, north), TAGS), f"{name} POIs")
+
+
+def fetch_graph(name: str, bbox: list[float], network_type: str = "drive"):
+    """Street graph from the local Geofabrik extract when present, else from Overpass."""
+    north, south, east, west = bbox
+    if osm_source.pbf_for(name):
+        print(f"[{name}] reading {network_type} network from local OSM extract")
+        return osm_source.load_graph(name, bbox, network_type)
+    configure_osmnx()
+    return with_mirrors(
+        lambda: ox.graph_from_bbox((west, south, east, north), network_type=network_type, simplify=True),
+        f"{name} {network_type}",
+    )
+
+
 def bbox_for(name: str) -> list[float]:
     return CHICAGO_BBOX if name == "chicago" else load_city(name)["bbox"]
 
@@ -115,12 +139,11 @@ def grid_cells(bbox: list[float]) -> pd.DataFrame:
 def build(name: str) -> pd.DataFrame:
     configure_osmnx()
     north, south, east, west = bbox_for(name)
-    osm_bbox = (west, south, east, north)  # osmnx 2.x: (left, bottom, right, top)
 
     cells = grid_cells([north, south, east, west]).set_index("h3_index")
 
     print(f"[{name}] downloading POIs …")
-    feats = with_mirrors(lambda: ox.features_from_bbox(osm_bbox, TAGS), f"{name} POIs")
+    feats = fetch_pois(name, [north, south, east, west])
     pts = feats.geometry.representative_point()
     feats = feats.assign(cell=[h3.latlng_to_cell(p.y, p.x, H3_RES) for p in pts])
     for group, pred in POI_GROUPS.items():
@@ -128,8 +151,8 @@ def build(name: str) -> pd.DataFrame:
         cells[group] = counts.reindex(cells.index).fillna(0)
 
     print(f"[{name}] downloading drive network …")
-    graph = with_mirrors(lambda: ox.graph_from_bbox(osm_bbox, network_type="drive", simplify=True), f"{name} roads")
-    nodes, edges = ox.graph_to_gdfs(graph)
+    graph = fetch_graph(name, [north, south, east, west])
+    nodes, edges = osm_source.graph_frames(graph)
     mids = edges.geometry.interpolate(0.5, normalized=True)
     edges = edges.assign(
         cell=[h3.latlng_to_cell(p.y, p.x, H3_RES) for p in mids],

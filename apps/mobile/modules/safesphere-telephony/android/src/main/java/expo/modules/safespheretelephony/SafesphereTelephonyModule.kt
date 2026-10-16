@@ -8,28 +8,71 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.media.AudioFormat
+import android.media.AudioRecord
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.telephony.SmsManager
+import android.util.Base64
 import expo.modules.kotlin.Promise
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * Sends SMS and places calls straight from the user's SIM — no server, no internet.
- * This is SafeSphere's offline SOS path, so it must never depend on network services.
+ * Device services the SOS path needs natively:
+ *  - SMS and direct calls straight from the user's SIM — no server, no internet (offline SOS);
+ *  - raw 16 kHz mono microphone capture for on-device scream detection (ML-3). Expo's recorder
+ *    only writes compressed files, but the detector needs PCM samples as they arrive.
  */
 class SafesphereTelephonyModule : Module() {
   private val context: Context?
     get() = appContext.reactContext
 
+  @Volatile private var capturing = false
+  private var audioRecord: AudioRecord? = null
+  private var captureThread: Thread? = null
+
   override fun definition() = ModuleDefinition {
     Name("SafesphereTelephony")
+
+    // { pcm16: base64 little-endian 16-bit mono samples, sampleRate: Int }
+    Events("onAudioChunk")
+
+    Function("isCapturingAudio") { capturing }
+
+    AsyncFunction("startAudioCapture") { sampleRate: Int, chunkSamples: Int, promise: Promise ->
+      val ctx = context
+      when {
+        ctx == null -> promise.reject("ERR_NO_CONTEXT", "App context is not available", null)
+        !hasPermission(ctx, Manifest.permission.RECORD_AUDIO) ->
+          promise.reject("ERR_PERMISSION", "RECORD_AUDIO permission has not been granted", null)
+        capturing -> promise.resolve(null)
+        else -> {
+          try {
+            startCapture(sampleRate, chunkSamples)
+            promise.resolve(null)
+          } catch (e: Exception) {
+            stopCapture()
+            promise.reject("ERR_AUDIO_CAPTURE", e.message ?: "Could not start the microphone", e)
+          }
+        }
+      }
+    }
+
+    AsyncFunction("stopAudioCapture") { promise: Promise ->
+      stopCapture()
+      promise.resolve(null)
+    }
+
+    OnDestroy { stopCapture() }
 
     Function("canSendSms") {
       val ctx = context ?: return@Function false
@@ -158,6 +201,55 @@ class SafesphereTelephonyModule : Module() {
 
     // No signal can leave the send pending for a long time; report back instead of hanging.
     handler.postDelayed({ settle(timedOut = true) }, SEND_TIMEOUT_MS)
+  }
+
+  @Suppress("MissingPermission") // checked by the caller
+  private fun startCapture(sampleRate: Int, chunkSamples: Int) {
+    val minBuffer = AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
+    require(minBuffer > 0) { "Unsupported sample rate $sampleRate" }
+    val record = AudioRecord(
+      MediaRecorder.AudioSource.MIC,
+      sampleRate,
+      AudioFormat.CHANNEL_IN_MONO,
+      AudioFormat.ENCODING_PCM_16BIT,
+      maxOf(minBuffer, chunkSamples * 2 * 2),
+    )
+    check(record.state == AudioRecord.STATE_INITIALIZED) { "Microphone is busy or unavailable" }
+    record.startRecording()
+    audioRecord = record
+    capturing = true
+    captureThread = Thread({
+      val buffer = ShortArray(chunkSamples)
+      while (capturing) {
+        var read = 0
+        while (read < chunkSamples && capturing) {
+          val n = record.read(buffer, read, chunkSamples - read)
+          if (n <= 0) break
+          read += n
+        }
+        if (read == chunkSamples) {
+          val bytes = ByteBuffer.allocate(read * 2).order(ByteOrder.LITTLE_ENDIAN)
+          bytes.asShortBuffer().put(buffer, 0, read)
+          sendEvent(
+            "onAudioChunk",
+            mapOf("pcm16" to Base64.encodeToString(bytes.array(), Base64.NO_WRAP), "sampleRate" to sampleRate),
+          )
+        } else if (read == 0) {
+          Thread.sleep(20)
+        }
+      }
+    }, "SafeSphereAudioCapture").apply { isDaemon = true; start() }
+  }
+
+  private fun stopCapture() {
+    capturing = false
+    captureThread?.join(500)
+    captureThread = null
+    audioRecord?.let {
+      try { it.stop() } catch (_: Exception) {}
+      it.release()
+    }
+    audioRecord = null
   }
 
   private fun hasPermission(ctx: Context, permission: String): Boolean =

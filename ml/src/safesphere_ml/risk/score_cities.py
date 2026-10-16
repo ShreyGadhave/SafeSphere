@@ -110,6 +110,7 @@ def score_pack(pack: str, model: xgb.Booster, features: list[str]) -> pd.DataFra
 def publish(pack: str, scored: pd.DataFrame) -> None:
     cities = sorted(scored["city"].unique())
     with psycopg.connect(database_url()) as conn, conn.cursor() as cur:
+        cur.execute("set statement_timeout = 0")  # bulk upload; the default 2 min is too short
         cur.execute("delete from public.risk_cells where city = any(%s::public.city[])", (cities,))
         with cur.copy(
             "copy public.risk_cells (h3_index, day_type, hour, city, centroid, score, reasons, model_version)"
@@ -126,6 +127,7 @@ def publish(pack: str, scored: pd.DataFrame) -> None:
 def register_model() -> None:
     metrics = json.loads((RISK_DIR / "metrics.json").read_text())
     with psycopg.connect(database_url()) as conn, conn.cursor() as cur:
+        cur.execute("set statement_timeout = 0")  # bulk upload; the default 2 min is too short
         cur.execute("update public.model_registry set is_active = false where name = 'risk'")
         cur.execute(
             "insert into public.model_registry (name, version, metrics, artifact_uri, is_active, notes)"

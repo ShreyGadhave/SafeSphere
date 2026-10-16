@@ -37,7 +37,8 @@ class Settings(BaseSettings):
     allowed_origins: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["http://localhost:5173"]
     )
-    model_dir: Path = Path(__file__).resolve().parents[3] / "ml" / "models"
+    # app/core/config.py -> repo root is 4 levels up (core, app, ml-api, services).
+    model_dir: Path = Path(__file__).resolve().parents[4] / "ml" / "models"
 
     @field_validator("groq_models", "allowed_origins", mode="before")
     @classmethod

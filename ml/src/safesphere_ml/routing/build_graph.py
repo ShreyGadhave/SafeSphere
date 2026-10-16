@@ -14,22 +14,20 @@ import sys
 
 import h3
 import numpy as np
-import osmnx as ox
+import networkx as nx
 
 from safesphere_ml.common.cities import CITY_PACKS
 from safesphere_ml.common.paths import MODELS_DIR
-from safesphere_ml.risk.osm_features import H3_RES, bbox_for, configure_osmnx, with_mirrors
+from safesphere_ml.risk.osm_features import H3_RES, bbox_for, fetch_graph
 
 ROUTING_DIR = MODELS_DIR / "routing"
 
 
 def build(pack: str, mode: str = "drive") -> None:
-    configure_osmnx()
-    north, south, east, west = bbox_for(pack)
-    graph = with_mirrors(
-        lambda: ox.graph_from_bbox((west, south, east, north), network_type=mode, simplify=True), f"{pack} {mode}"
-    )
-    graph = ox.truncate.largest_component(graph, strongly=mode == "drive")
+    graph = fetch_graph(pack, bbox_for(pack), mode)
+    # Keep the largest connected part so every node can reach every other.
+    parts = nx.strongly_connected_components(graph) if mode == "drive" else nx.weakly_connected_components(graph)
+    graph = graph.subgraph(max(parts, key=len)).copy()
 
     node_ids = np.fromiter(graph.nodes, dtype=np.int64)
     index = {n: i for i, n in enumerate(node_ids)}

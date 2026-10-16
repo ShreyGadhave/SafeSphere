@@ -33,3 +33,9 @@ def test_unbuilt_features_return_501() -> None:
 def test_settings_parse_comma_separated_models() -> None:
     settings = Settings(_env_file=None, groq_models="a/one, b/two")
     assert settings.groq_models == ["a/one", "b/two"]
+
+
+def test_default_model_dir_points_at_repo_ml_models() -> None:
+    model_dir = Settings(_env_file=None).model_dir
+    assert model_dir.parts[-2:] == ("ml", "models")
+    assert (model_dir.parent / "src" / "safesphere_ml").is_dir()
