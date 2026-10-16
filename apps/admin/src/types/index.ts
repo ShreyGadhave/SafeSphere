@@ -40,7 +40,7 @@ export interface LngLat {
 export interface MapMarker {
   id: string
   position: LngLat
-  tone: 'danger' | 'warning' | 'neutral' | 'info'
+  tone: 'danger' | 'warning' | 'neutral' | 'info' | 'safe'
   label: string
   pulse?: boolean
 }

@@ -6,10 +6,10 @@ import { Badge, Button, Card, EmptyState, ErrorState, PageHeader, Skeleton } fro
 import { errorMessage } from '@/lib/errors'
 import { timeAgo } from '@/lib/format'
 import { fadeUp, stagger } from '@/lib/motion'
-import { useActiveTrips, useTripTrail } from '@/lib/queries'
+import { useActiveTrips, usePlannedRoute, useTripTrail } from '@/lib/queries'
 import { regionById, regions } from '@/lib/regions'
 import { useNow } from '@/lib/useNow'
-import type { MapMarker, Region } from '@/types'
+import type { LngLat, MapLine, MapMarker, Region } from '@/types'
 
 const ISSUE: Record<string, string> = {
   off_route: 'Left route',
@@ -28,6 +28,7 @@ export function TripsPage() {
   const trail = useTripTrail(selected)
   const r = regionById(region)
   const current = trips.data?.find((t) => t.id === selected)
+  const planned = usePlannedRoute(current)
 
   const markers = useMemo<MapMarker[]>(() => {
     const list: MapMarker[] = []
@@ -42,9 +43,27 @@ export function TripsPage() {
           pulse: t.id === selected,
         })
     }
-    if (current?.destinationPoint) list.push({ id: 'dest', position: current.destinationPoint, tone: 'neutral', label: 'Destination' })
+    if (current?.originPoint) list.push({ id: 'start', position: current.originPoint, tone: 'safe', label: 'Start' })
+    if (current?.destinationPoint)
+      list.push({ id: 'dest', position: current.destinationPoint, tone: 'neutral', label: `Destination: ${current.destination_name ?? ''}` })
     return list
   }, [trips.data, now, selected, current])
+
+  // Planned route (grey) under the travelled trail (blue).
+  const lines = useMemo<MapLine[]>(() => {
+    if (!selected) return []
+    const list: MapLine[] = []
+    if (planned.data) list.push({ id: `${selected}-planned`, coordinates: planned.data, color: '#8A93A0' })
+    if (trail.data?.length) list.push({ id: selected, coordinates: trail.data, color: '#2563EB' })
+    return list
+  }, [selected, planned.data, trail.data])
+
+  // Fit start, destination, route and trail when a trip is picked.
+  const fitPoints = useMemo<LngLat[] | undefined>(() => {
+    if (!current) return undefined
+    const pts = [current.originPoint, current.destinationPoint, current.position].filter((p): p is LngLat => p != null)
+    return [...pts, ...(planned.data ?? []), ...(trail.data ?? [])]
+  }, [current, planned.data, trail.data])
 
   return (
     <div className="flex flex-col gap-5">
@@ -118,10 +137,24 @@ export function TripsPage() {
             center={r.center}
             zoom={r.zoom}
             markers={markers}
-            lines={selected && trail.data ? [{ id: selected, coordinates: trail.data, color: '#2563EB' }] : []}
-            fitTo={selected && trail.data?.length ? trail.data : undefined}
-            fitKey={selected ?? undefined}
+            lines={lines}
+            fitTo={fitPoints}
+            // Refit once the planned route arrives, not on every live trail update.
+            fitKey={selected ? `${selected}-${planned.data ? 'route' : 'pins'}` : undefined}
           />
+          {current && (
+            <div className="absolute bottom-3 left-3 flex flex-col gap-1.5 rounded-tile bg-white/95 px-3 py-2 text-xs shadow">
+              <span className="font-bold">{current.destination_name ? `To ${current.destination_name}` : 'Selected trip'}</span>
+              <span className="flex items-center gap-2"><span className="size-3 rounded-full bg-[#12A26B]" aria-hidden="true" />Start</span>
+              <span className="flex items-center gap-2"><span className="size-3 rounded-full bg-[#0E1726]" aria-hidden="true" />Destination</span>
+              <span className="flex items-center gap-2"><span className="h-1 w-4 rounded bg-[#8A93A0]" aria-hidden="true" />
+                {planned.isFetching ? 'Planned route (loading…)' : planned.data ? 'Planned route' : 'Planned route unavailable'}
+              </span>
+              <span className="flex items-center gap-2"><span className="h-1 w-4 rounded bg-[#2563EB]" aria-hidden="true" />
+                Travelled so far {trail.data?.length ? '' : '(no GPS yet)'}
+              </span>
+            </div>
+          )}
         </section>
       </div>
     </div>

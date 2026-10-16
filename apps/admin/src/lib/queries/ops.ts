@@ -41,6 +41,7 @@ export function useActiveTrips(region: Region) {
       return data.map((t) => ({
         ...t,
         position: latest.get(t.id) ?? null,
+        originPoint: parsePoint(t.origin),
         destinationPoint: parsePoint(t.destination),
         anomalies: (anomalies.data ?? []).filter((a) => a.trip_id === t.id),
       }))
@@ -62,6 +63,38 @@ export function useTripTrail(tripId: string | null) {
         .limit(2000)
       if (error) throw error
       return data.map((p) => parsePoint(p.location)).filter((p): p is LngLat => p != null)
+    },
+  })
+}
+
+// Free public OSRM servers (same as the app). Both are asked and the first good answer wins.
+const OSRM = {
+  drive: ['https://router.project-osrm.org/route/v1/driving', 'https://routing.openstreetmap.de/routed-car/route/v1/driving'],
+  walk: ['https://routing.openstreetmap.de/routed-foot/route/v1/driving'],
+} as const
+
+/** The planned route of a trip (start → destination) for the map; null when routing is unreachable. */
+export function usePlannedRoute(trip: { id: string; mode: string; originPoint: LngLat | null; destinationPoint: LngLat | null } | undefined) {
+  const from = trip?.originPoint
+  const to = trip?.destinationPoint
+  return useQuery({
+    queryKey: ['trips', 'planned', trip?.id],
+    enabled: !!from && !!to,
+    staleTime: Infinity,
+    queryFn: async ({ signal }) => {
+      const path = `${from!.lng},${from!.lat};${to!.lng},${to!.lat}?overview=full&geometries=geojson`
+      const servers = OSRM[trip!.mode === 'walk' ? 'walk' : 'drive']
+      const route = await Promise.any(
+        servers.map(async (base) => {
+          const res = await fetch(`${base}/${path}`, { signal })
+          if (!res.ok) throw new Error(`Routing ${res.status}`)
+          const json = (await res.json()) as { routes?: { geometry: { coordinates: [number, number][] } }[] }
+          const coords = json.routes?.[0]?.geometry.coordinates
+          if (!coords?.length) throw new Error('No route')
+          return coords.map(([lng, lat]) => ({ lng, lat }))
+        }),
+      ).catch(() => null)
+      return route
     },
   })
 }

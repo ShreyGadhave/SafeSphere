@@ -10,6 +10,7 @@ const markerColors: Record<MapMarker['tone'], string> = {
   warning: '#E08A00',
   neutral: '#0E1726',
   info: '#2563EB',
+  safe: '#12A26B',
 }
 
 type BaseMapProps = {
