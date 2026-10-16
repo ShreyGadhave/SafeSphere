@@ -3,8 +3,10 @@ import { createContext, type ReactNode, useContext, useEffect, useMemo, useRef, 
 import { useSafetySettings } from '@/features/profile';
 import { useActiveTrip } from '@/features/ride/state/tripStore';
 import { triggerSos, useSos } from '@/features/sos';
+import { requestPermission } from '@/lib/permissions';
 
-import { AudioDistressDetector } from './audioDetector';
+import config from '../../../assets/models/distress_config.json';
+import { type AudioDetection, AudioDistressDetector } from './audioDetector';
 import { FallDetector } from './motionDetector';
 
 /**
@@ -19,6 +21,9 @@ type DetectionState = {
   guardMode: boolean;
   setGuardMode: (on: boolean) => void;
   listening: { audio: boolean; motion: boolean };
+  /** Latest scream score (0–1) while listening, for the live readout; threshold is what triggers. */
+  audioLevel: AudioDetection | null;
+  threshold: number;
   error: string | null;
 };
 
@@ -31,6 +36,7 @@ export function DetectionProvider({ children }: { children: ReactNode }) {
   const tripArmed = useActiveTrip() != null;
   const [listening, setListening] = useState({ audio: false, motion: false });
   const [error, setError] = useState<string | null>(null);
+  const [audioLevel, setAudioLevel] = useState<AudioDetection | null>(null);
   const audio = useRef(new AudioDistressDetector());
   const motion = useRef(new FallDetector());
 
@@ -43,14 +49,25 @@ export function DetectionProvider({ children }: { children: ReactNode }) {
     const detector = audio.current;
     if (!wantAudio) return;
     let cancelled = false;
-    detector
-      .start(() => triggerSos({ source: 'audio', requireConfirm: true }))
-      .then(() => !cancelled && setListening((l) => ({ ...l, audio: true })))
-      .catch((e: Error) => setError(e.message));
+    void (async () => {
+      // Ask for the microphone here too: onboarding may have been skipped or the permission revoked.
+      if ((await requestPermission('microphone')) !== 'granted') {
+        if (!cancelled) setError('Microphone permission is off, so scream detection cannot listen. Allow it in Settings.');
+        return;
+      }
+      if (cancelled) return;
+      setError(null);
+      await detector.start(
+        () => triggerSos({ source: 'audio', requireConfirm: true }),
+        (d) => !cancelled && setAudioLevel(d),
+      );
+      if (!cancelled) setListening((l) => ({ ...l, audio: true }));
+    })().catch((e: Error) => !cancelled && setError(`Scream detection could not start: ${e.message}`));
     return () => {
       cancelled = true;
       void detector.stop();
       setListening((l) => ({ ...l, audio: false }));
+      setAudioLevel(null);
     };
   }, [wantAudio]);
 
@@ -70,8 +87,8 @@ export function DetectionProvider({ children }: { children: ReactNode }) {
   }, [wantMotion]);
 
   const value = useMemo(
-    () => ({ guardMode, setGuardMode, listening, error }),
-    [guardMode, listening, error],
+    () => ({ guardMode, setGuardMode, listening, audioLevel, threshold: config.threshold, error }),
+    [guardMode, listening, audioLevel, error],
   );
   return <DetectionContext.Provider value={value}>{children}</DetectionContext.Provider>;
 }

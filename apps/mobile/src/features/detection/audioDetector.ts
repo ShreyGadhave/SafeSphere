@@ -73,7 +73,8 @@ export class AudioDistressDetector {
     return canCaptureAudio();
   }
 
-  async start(onTrigger: (d: AudioDetection) => void): Promise<void> {
+  /** onScore receives every window's distress score (for the live readout in Guard mode). */
+  async start(onTrigger: (d: AudioDetection) => void, onScore?: (d: AudioDetection) => void): Promise<void> {
     if (this.stopCapture) return;
     const m = await getModel();
     this.stopCapture = await startAudioCapture(
@@ -89,6 +90,7 @@ export class AudioDistressDetector {
         m.run([input])
           .then(([out]) => {
             const detection = distressFromScores(new Float32Array(out));
+            onScore?.(detection);
             if (this.vote.push(detection.score >= config.threshold)) onTrigger(detection);
           })
           .catch((e) => console.warn('[audio-detector] inference failed', e))

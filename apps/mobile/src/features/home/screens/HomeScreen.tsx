@@ -26,7 +26,11 @@ export function HomeScreen() {
   const { settings, update } = useSafetySettings();
   const detection = useDetection();
   const listeningLabel =
-    [detection.listening.audio && 'listening for screams', detection.listening.motion && 'watching for falls']
+    [
+      detection.listening.audio &&
+        `listening for screams (hearing ${(detection.audioLevel?.score ?? 0).toFixed(2)}, triggers at ${detection.threshold.toFixed(2)})`,
+      detection.listening.motion && 'watching for falls',
+    ]
       .filter(Boolean)
       .join(' · ') || 'Turn on to arm scream and fall detection now';
   const { position, denied } = useCurrentPosition();
@@ -99,7 +103,7 @@ export function HomeScreen() {
         <ListRow
           icon={Mic}
           title="Scream detection"
-          subtitle="Listens only during trips"
+          subtitle="Listens in Guard mode and on trips"
           accessory={<Toggle value={settings.screamDetection} onValueChange={(v) => void update({ screamDetection: v })} accessibilityLabel="Scream detection" />}
         />
         <ListRow
@@ -110,6 +114,11 @@ export function HomeScreen() {
           accessory={<Toggle value={settings.shake} onValueChange={(v) => void update({ shake: v })} accessibilityLabel="Shake for SOS" />}
         />
       </Card>
+      {detection.guardMode && detection.error ? (
+        <Text variant="footnote" color="dangerText">
+          {detection.error}
+        </Text>
+      ) : null}
     </Screen>
   );
 }
