@@ -47,3 +47,8 @@ supabase/.temp/
 
 # Gradle caches (e.g. inside local native modules)
 .gradle/
+
+# Large generated ML artifacts (rebuild with the ml/ pipelines)
+ml/models/**/*.parquet
+ml/models/**/*.npz
+*.egg-info/

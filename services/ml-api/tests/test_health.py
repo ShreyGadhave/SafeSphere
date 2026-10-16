@@ -17,10 +17,17 @@ def test_health_reports_ok() -> None:
     assert body["llm_configured"] is False
 
 
-def test_unbuilt_models_return_501() -> None:
-    with make_client() as client:
+def test_models_missing_returns_503(tmp_path) -> None:
+    settings = Settings(_env_file=None, groq_api_key="", model_dir=tmp_path)
+    with TestClient(create_app(settings)) as client:
         response = client.post("/risk", json={"lat": 19.07, "lng": 72.87, "hour": 21})
-    assert response.status_code == 501
+    assert response.status_code == 503
+
+
+def test_unbuilt_features_return_501() -> None:
+    with make_client() as client:
+        response = client.post("/triage", json={})
+    assert response.status_code in (501, 422)
 
 
 def test_settings_parse_comma_separated_models() -> None:

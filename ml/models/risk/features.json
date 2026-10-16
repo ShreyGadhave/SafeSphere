@@ -1,0 +1,19 @@
+[
+  "shops_pct",
+  "food_pct",
+  "nightlife_pct",
+  "cash_pct",
+  "police_pct",
+  "health_pct",
+  "education_pct",
+  "fuel_pct",
+  "bus_stops_pct",
+  "stations_pct",
+  "major_road_km_pct",
+  "minor_road_km_pct",
+  "intersections_pct",
+  "police_dist_pct",
+  "hour_sin",
+  "hour_cos",
+  "weekend"
+]

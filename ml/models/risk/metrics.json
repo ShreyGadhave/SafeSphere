@@ -1,0 +1,35 @@
+{
+  "split": "train 2023 / test 2024, Chicago",
+  "unit": "H3 res-8 cell x hour x day type",
+  "baseline_poisson_glm": {
+    "spearman": 0.5914013904661518,
+    "roc_auc_top10": 0.8916966893300767,
+    "pr_auc_top10": 0.6139010123961955,
+    "pai_at_5pct": 5.135082979544577
+  },
+  "xgboost_poisson": {
+    "spearman": 0.6897883178514564,
+    "roc_auc_top10": 0.9478673709251786,
+    "pr_auc_top10": 0.7738969994170475,
+    "pai_at_5pct": 6.467387109224237
+  },
+  "feature_gain": {
+    "bus_stops_pct": 212.18983459472656,
+    "weekend": 71.74186706542969,
+    "stations_pct": 54.73920822143555,
+    "food_pct": 47.195281982421875,
+    "nightlife_pct": 38.16371536254883,
+    "intersections_pct": 35.47233200073242,
+    "education_pct": 31.715795516967773,
+    "minor_road_km_pct": 21.200355529785156,
+    "health_pct": 15.994674682617188,
+    "shops_pct": 15.855786323547363,
+    "police_dist_pct": 13.993841171264648,
+    "cash_pct": 13.641181945800781,
+    "fuel_pct": 13.501028060913086,
+    "hour_sin": 13.328423500061035,
+    "major_road_km_pct": 12.016374588012695,
+    "police_pct": 8.856103897094727,
+    "hour_cos": 5.124073028564453
+  }
+}
